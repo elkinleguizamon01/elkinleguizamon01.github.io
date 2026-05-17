@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinta Dinamic Black | New Black Tattoo</title>
+    <style>
+        /* Reset y estilos base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #fff;
+            color: #111;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        header {
+            background-color: #111;
+            color: #fff;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .logo span {
+            color: #111;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 2rem;
+            position: relative;
+        }
+
+        nav ul li a {
+            font-weight: 300;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #111;
+        }
+
+        .cart-icon {
+            font-size: 1.2rem;
+            margin-left: 2rem;
+            cursor: pointer;
+        }
+
+        /* Producto Detalle */
+        .product-detail {
+            padding: 7rem 2rem 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .product-gallery {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 1px solid #111;
+        }
+
+        .thumbnail-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: border 0.3s;
+        }
+
+        .thumbnail:hover {
+            border: 1px solid #111;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #111;
+        }
+
+        .product-description {
+            margin-bottom: 2rem;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .product-features {
+            margin-bottom: 2rem;
+        }
+
+        .product-features h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .product-features ul {
+            list-style-position: inside;
+            margin-left: 1rem;
+        }
+
+        .product-features li {
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .quantity-selector label {
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .quantity-selector input {
+            width: 60px;
+            padding: 0.5rem;
+            text-align: center;
+            border: 1px solid #111;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: #111;
+            color: #fff;
+            border: none;
+            border-radius: 0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #333;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+
+        .product-meta {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .meta-item {
+            margin-bottom: 1rem;
+        }
+
+        .meta-item span {
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Sección relacionada */
+        .related-products {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid #eee;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            color: #111;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            border: 1px solid #111;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+            color: #111;
+        }
+
+        .product-info p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .price {
+            color: #111;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            color: #fff;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: left;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: #111;
+            background: #fff;
+            display: inline-block;
+            padding: 0 0.5em;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column ul li a:hover {
+            color: #111;
+        }
+
+        .copyright {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #333;
+        }
+
+        /* Carrito de compras */
+        .cart-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            justify-content: flex-end;
+        }
+
+        .cart {
+            width: 400px;
+            height: 100%;
+            background-color: #fff;
+            color: #111;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-header h3 {
+            color: #111;
+        }
+
+        .close-cart {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            margin-right: 1rem;
+        }
+
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-info h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            color: #111;
+            font-weight: bold;
+        }
+
+        .remove-item {
+            color: #999;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .cart-total {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            margin-top: 1rem;
+            background: #111;
+            color: #fff;
+        }
+
+        .checkout-btn:hover {
+            background: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .product-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-image {
+                height: 400px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+
+        @media (max-width: 600px) {
+            .product-detail {
+                padding: 6rem 1rem 2rem;
+            }
+            
+            .thumbnail-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .product-title {
+                font-size: 1.8rem;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.7rem 1rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+                margin-top: 0.5rem;
+            }
+            
+            .cart-icon {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">NEW BLACK TATTOO</div>
+        <nav>
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../productos.html">Productos</a></li>
+                <li><a href="../tatuadores.html">Tatuadores</a></li>
+                <li><a href="../galeria.html">Galería</a></li>
+                <li><a href="../contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" tabindex="0" aria-label="Abrir carrito">🛒 <span class="cart-count">0</span></div>
+    </header>
+
+    <!-- Producto Detalle -->
+    <section class="product-detail">
+        <div class="product-container">
+            <div class="product-gallery">
+                <img src="images/productos/producto1/1.jpg" alt="Tinta Dinamic Black" class="main-image" id="main-image">
+                <div class="thumbnail-container">
+                    <img src="images/productos/producto1/1.jpg" alt="Tinta Dinamic Black - Vista frontal" class="thumbnail" onclick="changeImage(this)">
+                    <img src="images/productos/producto1/2.jpg" alt="Tinta Dinamic Black - Detalle" class="thumbnail" onclick="changeImage(this)">
+                    <img src="images/productos/producto1/1.jpg" alt="Tinta Dinamic Black - Envase" class="thumbnail" onclick="changeImage(this)">
+                    <img src="images/productos/producto1/2.jpg" alt="Tinta Dinamic Black - Aplicación" class="thumbnail" onclick="changeImage(this)">
+                </div>
+            </div>
+            <div class="product-info">
+                <h1 class="product-title">Dinamic Black - Tinta para Tatuajes</h1>
+                <p class="product-price">$22,000</p>
+                <div class="product-description">
+                    <p>La tinta Dinamic Black es una de las tintas negras más versátiles y confiables del mercado. Formulada específicamente para tatuajes profesionales, ofrece una pigmentación intensa y duradera que mantendrá tus diseños nítidos y vibrantes con el paso del tiempo.</p>
+                    <p>Esta tinta de alta calidad está esterilizada y libre de metales pesados, lo que la hace segura para todo tipo de pieles. Su consistencia perfectamente equilibrada permite una aplicación suave y un acabado uniforme, ideal tanto para líneas finas como para rellenos sólidos.</p>
+                </div>
+                <div class="product-features">
+                    <h3>Características principales:</h3>
+                    <ul>
+                        <li>Pigmentación negra intensa y duradera</li>
+                        <li>Fórmula profesional de alta calidad</li>
+                        <li>Esterilizada y libre de metales pesados</li>
+                        <li>Consistencia perfecta para líneas y rellenos</li>
+                        <li>Mínima dispersión bajo la piel</li>
+                        <li>Resultados uniformes y predecibles</li>
+                        <li>Envase hermético para máxima preservación</li>
+                        <li>Volumen: 30ml</li>
+                    </ul>
+                </div>
+                <div class="quantity-selector">
+                    <label for="quantity">Cantidad:</label>
+                    <input type="number" id="quantity" name="quantity" min="1" max="10" value="1">
+                </div>
+                <button class="btn add-to-cart" data-id="1" data-name="Dinamic Black - Tinta para Tatuajes" data-price="22000" data-image="images/productos/producto1/1.jpg">Añadir al carrito</button>
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <span>Categoría:</span> Tintas para Tatuaje
+                    </div>
+                    <div class="meta-item">
+                        <span>Disponibilidad:</span> En stock (15 unidades)
+                    </div>
+                    <div class="meta-item">
+                        <span>Envío:</span> Envío gratis en pedidos superiores a $50,000
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Productos Relacionados -->
+    <section class="related-products">
+        <h2 class="section-title">PRODUCTOS RELACIONADOS</h2>
+        <div class="products-grid">
+            <!-- Producto 2 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Kit de tatuaje">
+                </div>
+                <div class="product-info">
+                    <h3>Kit de Tatuaje Profesional</h3>
+                    <p>Kit completo para artistas del tatuaje. Incluye máquina, tintas y accesorios.</p>
+                    <p class="price">$129.99</p>
+                    <a href="producto-kit-tatuaje.html" class="btn">Ver Detalles</a>
+                </div>
+            </div>
+
+            <!-- Producto 3 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1583947581924-f7b0f9e5a5a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Tinta para tatuajes">
+                </div>
+                <div class="product-info">
+                    <h3>Set de Tintas Premium</h3>
+                    <p>Set de 12 colores de alta calidad para tatuajes profesionales.</p>
+                    <p class="price">$45.50</p>
+                    <a href="producto-tintas-premium.html" class="btn">Ver Detalles</a>
+                </div>
+            </div>
+
+            <!-- Producto 4 -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1589985270828-6b3a6dd6b6ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Protector solar">
+                </div>
+                <div class="product-info">
+                    <h3>Protector Solar para Tatuajes</h3>
+                    <p>Protege tus tatuajes del sol con este protector solar especial.</p>
+                    <p class="price">$12.99</p>
+                    <a href="producto-protector-solar.html" class="btn">Ver Detalles</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>NEW BLACK TATTOO</h3>
+                <p>Estudio de tatuajes y venta de productos especializados desde 2022.</p>
+            </div>
+            <div class="footer-column">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="productos.html">Productos</a></li>
+                    <li><a href="tatuadores.html">Tatuadores</a></li>
+                    <li><a href="galeria.html">Galería</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Contacto</h3>
+                <p>Email: newblacktattoo@gmail.com</p>
+                <p>Teléfono: +57 3214583086</p>
+                <p>
+                    <a href="https://www.instagram.com/newblack_tattoo_?igsh=MW10N2FweHY4c3YweQ==" target="_blank" style="color:#111; text-decoration:underline;">
+                        Instagram: @newblack_tattoo_
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 New Black Tattoo. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Carrito de compras -->
+    <div class="cart-overlay">
+        <div class="cart">
+            <div class="cart-header">
+                <h3>Tu Carrito</h3>
+                <span class="close-cart" tabindex="0" aria-label="Cerrar carrito">&times;</span>
+            </div>
+            <div class="cart-content">
+                <!-- Contenido del carrito generado por JavaScript -->
+            </div>
+            <div class="cart-total">
+                Total: $<span class="cart-total-amount">0.00</span>
+            </div>
+            <button class="btn checkout-btn" id="whatsapp-checkout">Proceder al pago</button>
+        </div>
+    </div>
+
+    <script>
+        // Cambiar imagen principal al hacer clic en miniaturas
+        function changeImage(element) {
+            const mainImage = document.getElementById('main-image');
+            mainImage.src = element.src;
+            mainImage.alt = element.alt;
+        }
+
+        // Carrito de compras
+        document.addEventListener('DOMContentLoaded', () => {
+            const cartOverlay = document.querySelector('.cart-overlay');
+            const cartBtn = document.querySelector('.cart-icon');
+            const closeCart = document.querySelector('.close-cart');
+            const cartContent = document.querySelector('.cart-content');
+            const cartTotal = document.querySelector('.cart-total-amount');
+            const cartCount = document.querySelector('.cart-count');
+            const addToCartBtns = document.querySelectorAll('.add-to-cart');
+            const whatsappCheckout = document.getElementById('whatsapp-checkout');
+
+            let cart = [];
+
+            // Abrir carrito
+            cartBtn.addEventListener('click', () => {
+                cartOverlay.style.display = 'flex';
+            });
+
+            // Cerrar carrito
+            closeCart.addEventListener('click', () => {
+                cartOverlay.style.display = 'none';
+            });
+            // Accesibilidad: cerrar con Enter
+            closeCart.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    cartOverlay.style.display = 'none';
+                }
+            });
+
+            // Añadir al carrito
+            addToCartBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-id');
+                    const name = btn.getAttribute('data-name');
+                    const price = parseFloat(btn.getAttribute('data-price'));
+                    const image = btn.getAttribute('data-image');
+                    const quantity = parseInt(document.getElementById('quantity').value);
+
+                    // Verificar si el producto ya está en el carrito
+                    const existingItem = cart.find(item => item.id === id);
+
+                    if (existingItem) {
+                        existingItem.quantity += quantity;
+                    } else {
+                        cart.push({
+                            id,
+                            name,
+                            price,
+                            image,
+                            quantity: quantity
+                        });
+                    }
+
+                    updateCart();
+                    showAddedToCart(name);
+                });
+            });
+
+            // Actualizar carrito
+            function updateCart() {
+                cartContent.innerHTML = '';
+                let total = 0;
+                let count = 0;
+
+                cart.forEach(item => {
+                    total += item.price * item.quantity;
+                    count += item.quantity;
+
+                    const cartItem = document.createElement('div');
+                    cartItem.classList.add('cart-item');
+                    cartItem.innerHTML = `
+                        <div class="cart-item-img">
+                            <img src="${item.image}" alt="${item.name}">
+                        </div>
+                        <div class="cart-item-info">
+                            <h4>${item.name}</h4>
+                            <p class="cart-item-price">$${item.price.toLocaleString('es-CO', {minimumFractionDigits: 2})} x ${item.quantity}</p>
+                            <p class="remove-item" data-id="${item.id}">Eliminar</p>
+                        </div>
+                    `;
+                    cartContent.appendChild(cartItem);
+                });
+
+                cartTotal.textContent = total.toLocaleString('es-CO', {minimumFractionDigits: 2});
+                cartCount.textContent = count;
+
+                // Añadir evento para eliminar items
+                const removeItems = document.querySelectorAll('.remove-item');
+                removeItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        const id = item.getAttribute('data-id');
+                        cart = cart.filter(product => product.id !== id);
+                        updateCart();
+                    });
+                });
+            }
+
+            // Mostrar notificación de producto añadido
+            function showAddedToCart(productName) {
+                const notification = document.createElement('div');
+                notification.style.position = 'fixed';
+                notification.style.bottom = '20px';
+                notification.style.right = '20px';
+                notification.style.backgroundColor = '#111';
+                notification.style.color = '#fff';
+                notification.style.padding = '15px 25px';
+                notification.style.borderRadius = '5px';
+                notification.style.zIndex = '3000';
+                notification.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+                notification.textContent = `✔ ${productName} añadido al carrito`;
+
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    notification.style.transition = 'opacity 0.5s';
+                    setTimeout(() => {
+                        document.body.removeChild(notification);
+                    }, 500);
+                }, 3000);
+            }
+
+            // Enviar pedido por WhatsApp
+            whatsappCheckout.addEventListener('click', function() {
+                if (cart.length === 0) {
+                    alert('El carrito está vacío.');
+                    return;
+                }
+                let mensaje = '¡Hola! Quiero comprar:%0A';
+                cart.forEach(item => {
+                    mensaje += `- ${item.name} x${item.quantity} ($${item.price.toLocaleString('es-CO', {minimumFractionDigits: 2})} c/u)%0A`;
+                });
+                mensaje += `Total: $${cartTotal.textContent}%0A`;
+                mensaje += '¿Me puedes ayudar con el pedido?';
+
+                // Número de WhatsApp (cambiar por el tuyo)
+                const numero = '573214583086'; // Colombia +57 3214583086
+                const url = `https://wa.me/${numero}?text=${mensaje}`;
+                window.open(url, '_blank');
+            });
+        });
+    </script>
+</body>
+</html>
