@@ -139,7 +139,7 @@
 
   <header>
     <div class="stamp">SEGUIR<br>LA TABLA</div>
-    <div class="kicker">Comida del día</div>
+    <div class="kicker">Comida diaria</div>
     <h1>Plan de nutrición</h1>
     <div class="fecha" id="fecha"></div>
   </header>
@@ -147,6 +147,8 @@
   <div class="macros" id="macros"></div>
 
   <div id="ticketsContainer"></div>
+
+  <div class="ticket" id="suppTicket"></div>
 
   <details class="subs">
     <summary>Posibles cambios / equivalencias</summary>
@@ -192,6 +194,10 @@ const MEALS = [
     { name: "Pechuga de pollo / res / cerdo / pescado", g: "200 g", p:40, c:0, f:10, k:326 },
     { name: "Ensalada o verduras al vapor", g: "1 taza", p:0, c:0, f:0, k:15 },
   ]},
+];
+
+const SUPPLEMENTS = [
+  { name: "Creatina", g: "5 g", note: "cualquier momento del día, con agua o jugo" },
 ];
 
 function todayKey(){
@@ -272,7 +278,37 @@ function render(){
   });
 
   renderMacros(totals);
+  renderSupplements();
   renderBanner(totals);
+}
+
+function renderSupplements(){
+  const el = document.getElementById("suppTicket");
+  let itemsHtml = "";
+  SUPPLEMENTS.forEach((s, si) => {
+    const id = "supp-" + si;
+    const isDone = !!checked[id];
+    itemsHtml += `
+      <label class="item ${isDone?'done':''}">
+        <input type="checkbox" data-supp="${id}" ${isDone?'checked':''}>
+        <span class="desc">${s.name}<br><span class="g">${s.g} · ${s.note}</span></span>
+      </label>`;
+  });
+  el.innerHTML = `
+    <div class="ticket-head">
+      <span class="num">Suplementos</span>
+      <span class="titulo">No olvidar</span>
+    </div>
+    ${itemsHtml}
+  `;
+  el.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', async (e) => {
+      const id = e.target.dataset.supp;
+      checked[id] = e.target.checked;
+      await saveState();
+      render();
+    });
+  });
 }
 
 function renderMacros(t){
@@ -302,11 +338,19 @@ function renderBanner(t){
   const banner = document.getElementById("banner");
   const proteinaId = "3-0";
   const tomoProteina = !!checked[proteinaId];
-  const todoListo = MEALS.every((meal, mi) => meal.items.every((it, ii) => checked[mi+"-"+ii]));
+  const tomoCreatina = !!checked["supp-0"];
+  const todoComida = MEALS.every((meal, mi) => meal.items.every((it, ii) => checked[mi+"-"+ii]));
+  const todoListo = todoComida && tomoCreatina;
 
   if(todoListo){
     banner.className = "banner ok";
-    banner.textContent = "Comiste todo lo del día. Buen trabajo, mañana se repite.";
+    banner.textContent = "Comiste todo y tomaste tu creatina. Buen trabajo, mañana se repite.";
+  } else if(!tomoCreatina && !tomoProteina){
+    banner.className = "banner";
+    banner.textContent = "No olvides tomar tu creatina y tu proteína post-entreno hoy.";
+  } else if(!tomoCreatina){
+    banner.className = "banner";
+    banner.textContent = "No olvides tomar tu creatina hoy.";
   } else if(!tomoProteina){
     banner.className = "banner";
     banner.textContent = "No olvides tomar tu proteína después de entrenar y comer las 5 comidas de hoy.";
@@ -329,3 +373,4 @@ document.getElementById("resetBtn").addEventListener("click", async () => {
 </script>
 </body>
 </html>
+
