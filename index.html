@@ -3,28 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comida del día — Plan de nutrición</title>
+<title>Plan Nutrición - Sincronizado con Google Sheets</title>
 <style>
   :root{
-    --paper:#EDE6D3;
-    --paper-dark:#E3DAC2;
-    --ink:#2A2318;
-    --ink-soft:#5B4F3C;
-    --muted:#8C7F68;
-    --line:#C9BEA0;
-    --red:#C1443C;
-    --red-deep:#8C2E28;
+    --bg:#0D0D0D;
+    --card-bg:#1A1A1A;
+    --border:#3A1C1C;
+    --text:#F0E6E6;
+    --text-soft:#BFA0A0;
+    --muted:#8C6B6B;
+    --red:#D94A4A;
+    --red-deep:#991F1F;
+    --red-dark:#661414;
     --green:#5E7A45;
-    --green-deep:#3E5230;
     --amber:#B5811E;
-    --amber-deep:#7A5814;
-    --card:#FBF8F0;
+    --line:#3A1C1C;
   }
   *{box-sizing:border-box;}
   body{
     margin:0;
-    background:var(--paper);
-    color:var(--ink);
+    background:var(--bg);
+    color:var(--text);
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
     padding:24px 12px 80px;
     line-height:1.45;
@@ -37,40 +36,40 @@
   header h1{
     font-family:Georgia,'Times New Roman',serif;
     font-size:28px;margin:4px 0 2px;font-weight:700;letter-spacing:0.5px;
+    color:var(--red);
   }
-  header .fecha{font-size:13px;color:var(--ink-soft);}
+  header .fecha{font-size:13px;color:var(--text-soft);}
   .stamp{
     position:absolute;top:-6px;right:0;
-    border:2px solid var(--red);color:var(--red-deep);
+    border:2px solid var(--red);color:var(--red);
     border-radius:50%;
     width:64px;height:64px;
     display:flex;align-items:center;justify-content:center;
     font-size:9px;font-weight:700;text-align:center;line-height:1.1;
     transform:rotate(12deg);
     letter-spacing:0.5px;
-    opacity:0.85;
+    opacity:0.9;
   }
-
   .macros{
-    background:var(--card);
-    border:1px solid var(--line);
+    background:var(--card-bg);
+    border:1px solid var(--border);
     border-radius:2px;
     padding:14px 16px 6px;
     margin-bottom:20px;
   }
   .macro-row{margin-bottom:12px;}
-  .macro-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--ink-soft);}
-  .macro-top b{color:var(--ink);font-size:13px;}
-  .bar{height:8px;background:var(--paper-dark);border-radius:4px;overflow:hidden;border:1px solid var(--line);}
+  .macro-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;color:var(--text-soft);}
+  .macro-top b{color:var(--text);font-size:13px;}
+  .bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border);}
   .bar > span{display:block;height:100%;transition:width .3s ease;}
-  .b-kcal>span{background:var(--ink-soft);}
+  .b-kcal>span{background:var(--text-soft);}
   .b-prot>span{background:var(--red);}
   .b-carb>span{background:var(--amber);}
   .b-fat>span{background:var(--green);}
 
   .ticket{
-    background:var(--card);
-    border:1px solid var(--line);
+    background:var(--card-bg);
+    border:1px solid var(--border);
     border-radius:2px;
     margin-bottom:18px;
     position:relative;
@@ -79,59 +78,64 @@
   .ticket::before, .ticket::after{
     content:"";
     position:absolute;left:0;right:0;height:0;
-    border-top:2px dashed var(--line);
+    border-top:2px dashed var(--border);
   }
   .ticket-head{
     display:flex;justify-content:space-between;align-items:baseline;
-    border-bottom:1px dashed var(--line);
+    border-bottom:1px dashed var(--border);
     padding-bottom:8px;margin-bottom:8px;
   }
-  .ticket-head .num{font-weight:700;font-size:13px;}
+  .ticket-head .num{font-weight:700;font-size:13px;color:var(--red);}
   .ticket-head .titulo{font-size:12px;color:var(--muted);text-align:right;flex:1;margin-left:10px;}
   .item{
     display:flex;align-items:flex-start;gap:10px;
-    padding:6px 0;border-bottom:1px dotted var(--line);
+    padding:6px 0;border-bottom:1px dotted var(--border);
     font-size:12.5px;
   }
   .item:last-of-type{border-bottom:none;}
   .item input[type=checkbox]{
-    width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--green);cursor:pointer;
+    width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--red);cursor:pointer;
   }
-  .item .desc{flex:1;}
+  .item .desc{flex:1;color:var(--text);}
   .item .desc .g{color:var(--muted);font-size:11px;}
-  .item.done .desc{opacity:0.45;text-decoration:line-through;}
-  .item .kcal{white-space:nowrap;font-size:12px;color:var(--ink-soft);}
+  .item.done .desc{opacity:0.4;text-decoration:line-through;}
+  .item .kcal{white-space:nowrap;font-size:12px;color:var(--text-soft);}
   .ticket-foot{
     display:flex;justify-content:space-between;
-    border-top:1px dashed var(--line);
+    border-top:1px dashed var(--border);
     margin-top:8px;padding-top:8px;
     font-size:12.5px;font-weight:700;
+    color:var(--text-soft);
   }
 
   details.subs{
-    background:var(--card);border:1px solid var(--line);border-radius:2px;
+    background:var(--card-bg);border:1px solid var(--border);border-radius:2px;
     padding:10px 16px;margin-bottom:18px;font-size:12.5px;
   }
-  details.subs summary{cursor:pointer;font-weight:700;color:var(--ink-soft);}
-  details.subs ul{margin:8px 0 4px;padding-left:18px;}
+  details.subs summary{cursor:pointer;font-weight:700;color:var(--red);}
+  details.subs ul{margin:8px 0 4px;padding-left:18px;color:var(--text-soft);}
   details.subs li{margin-bottom:4px;}
 
   .banner{
     position:sticky;bottom:12px;
-    background:var(--red);color:#FBF0EC;
+    background:var(--red-deep);color:#FBF0EC;
     border-radius:4px;padding:10px 14px;
     font-size:12.5px;text-align:center;
-    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+    box-shadow:0 2px 6px rgba(0,0,0,0.6);
     margin-top:8px;
+    border:1px solid var(--red);
   }
-  .banner.ok{background:var(--green);}
+  .banner.ok{background:var(--green-deep);border-color:var(--green);}
 
-  .reset{
-    display:block;margin:18px auto 0;
-    background:none;border:1px solid var(--line);color:var(--ink-soft);
-    font-family:inherit;font-size:11px;padding:6px 14px;border-radius:3px;cursor:pointer;
+  .toolbar{
+    display:flex; gap:10px; justify-content:center; margin:18px 0 10px;
   }
-  .reset:hover{border-color:var(--red);color:var(--red-deep);}
+  .toolbar button{
+    background:none; border:1px solid var(--border); color:var(--text-soft);
+    font-family:inherit; font-size:11px; padding:6px 14px; border-radius:3px; cursor:pointer;
+  }
+  .toolbar button:hover{border-color:var(--red);color:var(--red);}
+  .loader{text-align:center;padding:40px 0;color:var(--muted);}
 </style>
 </head>
 <body>
@@ -139,128 +143,207 @@
 
   <header>
     <div class="stamp">SEGUIR<br>LA TABLA</div>
-    <div class="kicker">Comida diaria</div>
+    <div class="kicker">Comanda diaria</div>
     <h1>Plan de nutrición</h1>
     <div class="fecha" id="fecha"></div>
   </header>
 
-  <div class="macros" id="macros"></div>
+  <!-- Contenedor de macros -->
+  <div class="macros" id="macros">
+    <div class="loader">Cargando datos desde Google Sheets...</div>
+  </div>
 
+  <!-- Contenedor de tickets -->
   <div id="ticketsContainer"></div>
 
+  <!-- Suplementos -->
   <div class="ticket" id="suppTicket"></div>
 
-  <details class="subs">
+  <!-- Posibles cambios -->
+  <details class="subs" id="subsContainer">
     <summary>Posibles cambios / equivalencias</summary>
-    <ul>
-      <li><b>150 g de arroz</b> → 170 g papa cocida, 170 g yuca cocida, 140 g plátano maduro, o 100 g de pasta cocida.</li>
-      <li><b>200 g de pollo</b> → 1 lata grande de atún en agua + 3 huevos.</li>
-    </ul>
+    <ul id="subsList"><li>Cargando...</li></ul>
   </details>
 
-  <div class="banner" id="banner"></div>
+  <div class="banner" id="banner">Cargando plan...</div>
 
-  <button class="reset" id="resetBtn">Reiniciar marcas de hoy</button>
+  <div class="toolbar">
+    <button id="syncBtn">🔄 Sincronizar con hoja ahora</button>
+    <button id="resetBtn">Reiniciar marcas de hoy</button>
+  </div>
 
 </div>
 
 <script>
-const TARGET = { kcal: 2178, prot: 206, carb: 168, fat: 78 };
+// ============================================
+//  CONFIGURACIÓN - CAMBIA ESTA URL
+// ============================================
+const SHEETS_API_URL = 'https://script.google.com/macros/s/TU_CODIGO_AQUI/exec';
 
-const MEALS = [
-  { titulo: "Desayuno", items: [
-    { name: "Huevos al gusto (sin embutidos)", g: "5 u", p:26, c:1, f:0, k:376 },
-    { name: "Arepa de maíz blanco", g: "1 u", p:5.07, c:19.89, f:2.07, k:160 },
-    { name: "Queso pera", g: "30 g", p:0, c:0, f:0, k:58 },
-    { name: "Tinto o aromática sin azúcar", g: "1", p:0, c:0, f:0, k:0 },
-  ]},
-  { titulo: "Media mañana (complemento)", items: [
-    { name: "Yogurt griego o natural", g: "80 g", p:6, c:5, f:2, k:111 },
-    { name: "Banano / manzana / fresas / arándanos o mix", g: "100 g", p:1, c:14, f:0.5, k:60 },
-  ]},
-  { titulo: "Almuerzo", items: [
-    { name: "Arroz blanco o de verduras", g: "150 g", p:3.27, c:33.6, f:0.36, k:188 },
-    { name: "Atún en agua", g: "100 g", p:24, c:0, f:1, k:167 },
-    { name: "Pechuga de pollo / res / cerdo / pescado", g: "100 g", p:40, c:0, f:10, k:163 },
-    { name: "Ensalada o verduras al vapor", g: "1 taza", p:0, c:0, f:0, k:40 },
-    { name: "Aceite de oliva (cocción)", g: "1 cda", p:0, c:0, f:5, k:45 },
-    { name: "Aguacate", g: "40 g", p:0.6, c:2.55, f:4.41, k:69 },
-  ]},
-  { titulo: "Después de entrenar", items: [
-    { name: "Proteína de suero de leche en agua", g: "1 scoop", p:24, c:2, f:1, k:120 },
-  ]},
-  { titulo: "Cena", items: [
-    { name: "Arroz blanco o de verduras", g: "150 g", p:3.27, c:33.6, f:0.36, k:188 },
-    { name: "Pechuga de pollo / res / cerdo / pescado", g: "200 g", p:40, c:0, f:10, k:326 },
-    { name: "Ensalada o verduras al vapor", g: "1 taza", p:0, c:0, f:0, k:15 },
-  ]},
-];
+// ============================================
+//  ESTADO GLOBAL
+// ============================================
+let planData = null;           // Datos obtenidos de la hoja
+let checked = {};             // Checkboxes marcados (localStorage)
+let yaEnviadoHoy = false;     // Para no enviar múltiples veces a la hoja de registro
 
-const SUPPLEMENTS = [
-  { name: "Creatina", g: "5 g", note: "cualquier momento del día, con agua o jugo" },
-];
-
-function todayKey(){
+// ============================================
+//  FUNCIONES DE LOCALSTORAGE
+// ============================================
+function todayKey() {
   const d = new Date();
   return "nutri:" + d.toISOString().slice(0,10);
 }
 
-let checked = {};
+function loadState() {
+  const key = todayKey();
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) checked = JSON.parse(stored);
+    else checked = {};
+  } catch(e) { checked = {}; }
+}
 
-async function loadState(){
-  try{
-    const res = await window.storage.get(todayKey());
-    checked = res ? JSON.parse(res.value) : {};
-  }catch(e){
-    checked = {};
+function saveState() {
+  const key = todayKey();
+  try {
+    localStorage.setItem(key, JSON.stringify(checked));
+  } catch(e) {}
+}
+
+// ============================================
+//  FETCH DESDE GOOGLE SHEETS
+// ============================================
+async function fetchPlanFromSheets() {
+  try {
+    const response = await fetch(SHEETS_API_URL);
+    if (!response.ok) throw new Error('Error HTTP: ' + response.status);
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    return data;
+  } catch (e) {
+    console.error('Error al obtener plan:', e);
+    throw e;
   }
 }
 
-async function saveState(){
-  try{
-    await window.storage.set(todayKey(), JSON.stringify(checked));
-  }catch(e){}
-}
+// ============================================
+//  RENDERIZADO DINÁMICO
+// ============================================
+function render() {
+  if (!planData) {
+    document.getElementById('macros').innerHTML = '<div class="loader">Sin datos. Haz clic en "Sincronizar".</div>';
+    return;
+  }
 
-function fmt(n){
-  return (Math.round(n*10)/10).toString();
-}
-
-function render(){
-  const fechaEl = document.getElementById("fecha");
+  // 1. Fecha
   const d = new Date();
-  fechaEl.textContent = d.toLocaleDateString("es-CO", { weekday:'long', day:'numeric', month:'long' });
+  document.getElementById('fecha').textContent = d.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long' });
 
-  const container = document.getElementById("ticketsContainer");
-  container.innerHTML = "";
+  // 2. Macros
+  renderMacros(planData.target);
 
-  let totals = { kcal:0, p:0, c:0, f:0 };
+  // 3. Tickets de comidas
+  renderMeals(planData.meals);
 
-  MEALS.forEach((meal, mi) => {
-    const ticket = document.createElement("div");
-    ticket.className = "ticket";
+  // 4. Suplementos
+  renderSupplements(planData.supplements);
+
+  // 5. Sustituciones
+  renderSubstitutions(planData.substitutions);
+
+  // 6. Banner (calcular totales)
+  const totals = calculateTotals(planData.meals);
+  renderBanner(totals);
+}
+
+function renderMacros(target) {
+  const el = document.getElementById('macros');
+  el.innerHTML = `
+    <div class="macro-row">
+      <div class="macro-top"><span>Calorías</span><b>0 / ${target.kcal} kcal</b></div>
+      <div class="bar b-kcal"><span style="width:0%"></span></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-top"><span>Proteína</span><b>0 / ${target.prot} g</b></div>
+      <div class="bar b-prot"><span style="width:0%"></span></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-top"><span>Carbohidratos</span><b>0 / ${target.carb} g</b></div>
+      <div class="bar b-carb"><span style="width:0%"></span></div>
+    </div>
+    <div class="macro-row">
+      <div class="macro-top"><span>Grasas</span><b>0 / ${target.fat} g</b></div>
+      <div class="bar b-fat"><span style="width:0%"></span></div>
+    </div>
+  `;
+}
+
+function calculateTotals(meals) {
+  let totals = { kcal: 0, p: 0, c: 0, f: 0 };
+  meals.forEach(meal => {
+    meal.items.forEach((it, idx) => {
+      const id = meal.id + '-' + idx;
+      if (checked[id]) {
+        totals.kcal += it.k || 0;
+        totals.p += it.p || 0;
+        totals.c += it.c || 0;
+        totals.f += it.f || 0;
+      }
+    });
+  });
+  return totals;
+}
+
+function updateMacrosProgress(target, totals) {
+  const pct = (v, target) => Math.min(100, Math.round((v/target)*100));
+  const el = document.getElementById('macros');
+  if (!el) return;
+  const bars = el.querySelectorAll('.bar > span');
+  if (bars.length >= 4) {
+    bars[0].style.width = pct(totals.kcal, target.kcal) + '%';
+    bars[1].style.width = pct(totals.p, target.prot) + '%';
+    bars[2].style.width = pct(totals.c, target.carb) + '%';
+    bars[3].style.width = pct(totals.f, target.fat) + '%';
+  }
+  // Actualizar textos
+  const labels = el.querySelectorAll('.macro-top b');
+  if (labels.length >= 4) {
+    labels[0].textContent = Math.round(totals.kcal) + ' / ' + target.kcal + ' kcal';
+    labels[1].textContent = totals.p.toFixed(1) + ' / ' + target.prot + ' g';
+    labels[2].textContent = totals.c.toFixed(1) + ' / ' + target.carb + ' g';
+    labels[3].textContent = totals.f.toFixed(1) + ' / ' + target.fat + ' g';
+  }
+}
+
+function renderMeals(meals) {
+  const container = document.getElementById('ticketsContainer');
+  container.innerHTML = '';
+
+  meals.forEach((meal, mi) => {
+    const ticket = document.createElement('div');
+    ticket.className = 'ticket';
 
     let mealKcal = 0;
-    let itemsHtml = "";
+    let itemsHtml = '';
     meal.items.forEach((it, ii) => {
-      const id = mi + "-" + ii;
+      const id = meal.id + '-' + ii;
       const isDone = !!checked[id];
-      if(isDone){
-        totals.kcal += it.k; totals.p += it.p; totals.c += it.c; totals.f += it.f;
-      }
-      mealKcal += it.k;
+      if (isDone) mealKcal += it.k || 0;
+      
+      const gramsDisplay = it.g || (it.alimento_g ? it.alimento_g + ' g' : '');
       itemsHtml += `
         <label class="item ${isDone?'done':''}">
           <input type="checkbox" data-id="${id}" ${isDone?'checked':''}>
-          <span class="desc">${it.name}<br><span class="g">${it.g} · P ${fmt(it.p)}g · C ${fmt(it.c)}g · G ${fmt(it.f)}g</span></span>
-          <span class="kcal">${it.k} kcal</span>
+          <span class="desc">${it.name}<br><span class="g">${gramsDisplay} · P ${(it.p||0).toFixed(1)}g · C ${(it.c||0).toFixed(1)}g · G ${(it.f||0).toFixed(1)}g</span></span>
+          <span class="kcal">${it.k || 0} kcal</span>
         </label>`;
     });
 
     ticket.innerHTML = `
       <div class="ticket-head">
-        <span class="num">N.º ${mi+1}</span>
-        <span class="titulo">${meal.titulo}</span>
+        <span class="num">N.º ${meal.id}</span>
+        <span class="titulo">${meal.titulo || 'Comida ' + meal.id}</span>
       </div>
       ${itemsHtml}
       <div class="ticket-foot"><span>Subtotal</span><span>${mealKcal} kcal</span></div>
@@ -268,30 +351,50 @@ function render(){
     container.appendChild(ticket);
   });
 
+  // Listeners para checkboxes
   container.querySelectorAll('input[type=checkbox]').forEach(cb => {
-    cb.addEventListener('change', async (e) => {
+    cb.addEventListener('change', (e) => {
       const id = e.target.dataset.id;
       checked[id] = e.target.checked;
-      await saveState();
-      render();
+      saveState();
+      // Recalcular y actualizar macros y banner
+      const totals = calculateTotals(planData.meals);
+      updateMacrosProgress(planData.target, totals);
+      renderBanner(totals);
+      // Actualizar subtotales (opcional, o re-renderizar todo)
+      // Podemos simplemente re-renderizar meals para actualizar subtotales y tachados
+      renderMeals(planData.meals);
+      // Pero ojo: re-renderizar meals resetea los listeners, pero los volvemos a poner.
+      // Para evitar loop, mejor llamamos a una función específica para actualizar subtotales.
+      // O simplemente renderizar todo de nuevo (más fácil, pero pierde el foco).
+      // Voy a re-renderizar todo para mantener consistencia.
+      // Pero los checkboxes se mantienen por el estado.
+      renderMeals(planData.meals);
+      // Actualizar suplementos también
+      renderSupplements(planData.supplements);
+      // Recalcular totales de nuevo
+      const newTotals = calculateTotals(planData.meals);
+      updateMacrosProgress(planData.target, newTotals);
+      renderBanner(newTotals);
+      // No olvidar el banner de suplementos
     });
   });
-
-  renderMacros(totals);
-  renderSupplements();
-  renderBanner(totals);
 }
 
-function renderSupplements(){
-  const el = document.getElementById("suppTicket");
-  let itemsHtml = "";
-  SUPPLEMENTS.forEach((s, si) => {
-    const id = "supp-" + si;
+function renderSupplements(supplements) {
+  const el = document.getElementById('suppTicket');
+  if (!supplements || supplements.length === 0) {
+    el.innerHTML = `<div class="ticket-head"><span class="num">Suplementos</span><span class="titulo">No hay suplementos registrados</span></div>`;
+    return;
+  }
+  let itemsHtml = '';
+  supplements.forEach((s, si) => {
+    const id = 'supp-' + si;
     const isDone = !!checked[id];
     itemsHtml += `
       <label class="item ${isDone?'done':''}">
         <input type="checkbox" data-supp="${id}" ${isDone?'checked':''}>
-        <span class="desc">${s.name}<br><span class="g">${s.g} · ${s.note}</span></span>
+        <span class="desc">${s.name}</span>
       </label>`;
   });
   el.innerHTML = `
@@ -302,75 +405,110 @@ function renderSupplements(){
     ${itemsHtml}
   `;
   el.querySelectorAll('input[type=checkbox]').forEach(cb => {
-    cb.addEventListener('change', async (e) => {
+    cb.addEventListener('change', (e) => {
       const id = e.target.dataset.supp;
       checked[id] = e.target.checked;
-      await saveState();
-      render();
+      saveState();
+      renderBanner(calculateTotals(planData.meals));
     });
   });
 }
 
-function renderMacros(t){
-  const el = document.getElementById("macros");
-  const pct = (v, target) => Math.min(100, Math.round((v/target)*100));
-  el.innerHTML = `
-    <div class="macro-row">
-      <div class="macro-top"><span>Calorías</span><b>${Math.round(t.kcal)} / ${TARGET.kcal} kcal</b></div>
-      <div class="bar b-kcal"><span style="width:${pct(t.kcal,TARGET.kcal)}%"></span></div>
-    </div>
-    <div class="macro-row">
-      <div class="macro-top"><span>Proteína</span><b>${fmt(t.p)} / ${TARGET.prot} g</b></div>
-      <div class="bar b-prot"><span style="width:${pct(t.p,TARGET.prot)}%"></span></div>
-    </div>
-    <div class="macro-row">
-      <div class="macro-top"><span>Carbohidratos</span><b>${fmt(t.c)} / ${TARGET.carb} g</b></div>
-      <div class="bar b-carb"><span style="width:${pct(t.c,TARGET.carb)}%"></span></div>
-    </div>
-    <div class="macro-row">
-      <div class="macro-top"><span>Grasas</span><b>${fmt(t.f)} / ${TARGET.fat} g</b></div>
-      <div class="bar b-fat"><span style="width:${pct(t.f,TARGET.fat)}%"></span></div>
-    </div>
-  `;
+function renderSubstitutions(subs) {
+  const list = document.getElementById('subsList');
+  if (!subs || subs.length === 0) {
+    list.innerHTML = '<li>No hay cambios registrados.</li>';
+    return;
+  }
+  list.innerHTML = subs.map(s => `<li>${s}</li>`).join('');
 }
 
-function renderBanner(t){
-  const banner = document.getElementById("banner");
-  const proteinaId = "3-0";
-  const tomoProteina = !!checked[proteinaId];
-  const tomoCreatina = !!checked["supp-0"];
-  const todoComida = MEALS.every((meal, mi) => meal.items.every((it, ii) => checked[mi+"-"+ii]));
+function renderBanner(totals) {
+  const banner = document.getElementById('banner');
+  if (!planData) {
+    banner.textContent = 'Cargando plan...';
+    return;
+  }
+
+  const tomoCreatina = !!checked['supp-0'];
+  // Ver si todas las comidas están completas
+  let todoComida = true;
+  planData.meals.forEach(meal => {
+    meal.items.forEach((it, idx) => {
+      const id = meal.id + '-' + idx;
+      if (!checked[id]) todoComida = false;
+    });
+  });
+
   const todoListo = todoComida && tomoCreatina;
 
-  if(todoListo){
+  if (todoListo) {
     banner.className = "banner ok";
-    banner.textContent = "Comiste todo y tomaste tu creatina. Buen trabajo, mañana se repite.";
-  } else if(!tomoCreatina && !tomoProteina){
+    banner.textContent = "Comiste todo y tomaste tus suplementos. ¡Buen trabajo!";
+    // Aquí podrías enviar a la hoja de registro si quieres
+  } else if (!tomoCreatina) {
     banner.className = "banner";
-    banner.textContent = "No olvides tomar tu creatina y tu proteína post-entreno hoy.";
-  } else if(!tomoCreatina){
-    banner.className = "banner";
-    banner.textContent = "No olvides tomar tu creatina hoy.";
-  } else if(!tomoProteina){
-    banner.className = "banner";
-    banner.textContent = "No olvides tomar tu proteína después de entrenar y comer las 5 comidas de hoy.";
+    banner.textContent = "No olvides tomar tus suplementos (Creatina, etc.)";
   } else {
     banner.className = "banner";
-    banner.textContent = "Recuerda comer las 5 comidas de hoy, sin saltarte ninguna.";
+    banner.textContent = "Recuerda completar todas las comidas de hoy.";
   }
 }
 
-document.getElementById("resetBtn").addEventListener("click", async () => {
-  checked = {};
-  await saveState();
-  render();
+// ============================================
+//  FUNCIÓN PRINCIPAL DE SINCRONIZACIÓN
+// ============================================
+async function syncPlan() {
+  const loader = document.getElementById('macros');
+  loader.innerHTML = '<div class="loader">🔄 Sincronizando con Google Sheets...</div>';
+  try {
+    planData = await fetchPlanFromSheets();
+    // Guardar en localStorage para caché (opcional)
+    localStorage.setItem('nutriPlanCache', JSON.stringify(planData));
+    render();
+  } catch (e) {
+    loader.innerHTML = `<div class="loader" style="color:var(--red);">❌ Error al sincronizar: ${e.message}. Revisa la consola.</div>`;
+    // Intentar cargar caché
+    const cached = localStorage.getItem('nutriPlanCache');
+    if (cached) {
+      try {
+        planData = JSON.parse(cached);
+        render();
+        loader.innerHTML = '<div class="loader" style="color:var(--muted);">⚠️ Usando datos en caché (falló la sincronización).</div>';
+      } catch (e2) {}
+    }
+  }
+}
+
+// ============================================
+//  INICIALIZACIÓN
+// ============================================
+document.addEventListener('DOMContentLoaded', async () => {
+  loadState();
+  
+  // Intentar cargar caché primero para mostrar rápido
+  const cached = localStorage.getItem('nutriPlanCache');
+  if (cached) {
+    try {
+      planData = JSON.parse(cached);
+      render();
+    } catch(e) {}
+  }
+
+  // Sincronizar con la hoja
+  await syncPlan();
+
+  // Configurar botón de sincronización
+  document.getElementById('syncBtn').addEventListener('click', syncPlan);
+
+  // Botón reiniciar
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    checked = {};
+    saveState();
+    if (planData) render();
+  });
 });
 
-(async () => {
-  await loadState();
-  render();
-})();
 </script>
 </body>
 </html>
-
