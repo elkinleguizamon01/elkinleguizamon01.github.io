@@ -615,7 +615,7 @@
   /* ============================================ */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 24px;
   }
 
@@ -647,19 +647,21 @@
   }
 
   .card-top {
-    padding: 24px 24px 16px;
+    padding: 20px 20px 12px;
     position: relative;
-    min-height: 120px;
   }
 
-  .card[data-cat="batidos"] .card-top {
+  .card[data-cat="smothies"] .card-top {
     background: linear-gradient(135deg, #FDF2F0 0%, #FBE9E6 100%);
   }
-  .card[data-cat="bowls"] .card-top {
+  .card[data-cat="protein"] .card-top {
     background: linear-gradient(135deg, #FDF8F0 0%, #FBF0E0 100%);
   }
-  .card[data-cat="snacks"] .card-top {
+  .card[data-cat="intenze"] .card-top {
     background: linear-gradient(135deg, #F2F5F0 0%, #E8EDE5 100%);
+  }
+  .card[data-cat="especiales"] .card-top {
+    background: linear-gradient(135deg, #F0F2F8 0%, #E5E8F0 100%);
   }
 
   .card-cat {
@@ -669,7 +671,7 @@
     letter-spacing: 0.1em;
     color: var(--text-light);
     display: inline-block;
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.8);
     padding: 2px 12px;
     border-radius: 12px;
     font-family: var(--font-sans);
@@ -677,30 +679,32 @@
 
   .card-top h3 {
     font-family: var(--font-serif);
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-top: 6px;
+    margin-top: 4px;
     color: var(--text);
     letter-spacing: -0.02em;
   }
 
   .card-desc {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     color: var(--text-light);
-    margin-top: 4px;
-    line-height: 1.5;
+    margin-top: 2px;
+    line-height: 1.4;
     font-weight: 400;
     font-family: var(--font-sans);
   }
 
-  .facts {
-    padding: 16px 24px 12px;
+  /* ===== NUTRICIÓN ===== */
+  .nutrition {
+    padding: 14px 20px 12px;
     border-top: 1px solid var(--border);
+    background: var(--bg);
   }
 
-  .facts-title {
+  .nutrition-title {
     font-size: 0.6rem;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-light);
@@ -708,33 +712,52 @@
     font-family: var(--font-sans);
   }
 
-  .facts-grid {
+  .nutrition-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px 16px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 4px;
   }
 
-  .facts-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    padding: 3px 0;
+  .nutrition-item {
+    text-align: center;
+    padding: 4px 2px;
+    background: var(--surface);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+
+  .nutrition-item .label {
+    font-size: 0.55rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-light);
+    display: block;
+    font-family: var(--font-sans);
+  }
+
+  .nutrition-item .value {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+    font-family: var(--font-sans);
+  }
+
+  .nutrition-item .unit {
+    font-size: 0.5rem;
+    font-weight: 400;
     color: var(--text-light);
     font-family: var(--font-sans);
-    font-weight: 400;
-  }
-
-  .facts-row b {
-    font-weight: 600;
-    color: var(--text);
   }
 
   .card-footer {
-    padding: 12px 24px 20px;
+    padding: 12px 20px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-top: auto;
+    background: var(--surface);
   }
 
   .price {
@@ -1238,6 +1261,9 @@
     .checkout-content {
       padding: 28px 20px 24px;
     }
+    .nutrition-grid {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   @media (max-width: 480px) {
@@ -1265,6 +1291,9 @@
     }
     .checkout-actions {
       flex-direction: column;
+    }
+    .nutrition-grid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style>
@@ -1335,9 +1364,10 @@
 
   <div class="filters" role="tablist">
     <button class="filter-btn active" data-filter="todos">Todos</button>
-    <button class="filter-btn" data-filter="batidos">Batidos</button>
-    <button class="filter-btn" data-filter="bowls">Bowls</button>
-    <button class="filter-btn" data-filter="snacks">Snacks</button>
+    <button class="filter-btn" data-filter="smothies">Smothies</button>
+    <button class="filter-btn" data-filter="protein">Proteína</button>
+    <button class="filter-btn" data-filter="intenze">Intenze</button>
+    <button class="filter-btn" data-filter="especiales">Especiales</button>
   </div>
 
   <div class="grid" id="grid"></div>
@@ -1374,8 +1404,6 @@
   </div>
   
   <div class="cart-summary">
-    <div class="summary-row"><span>Calorías totales</span><span id="sumCal">0 kcal</span></div>
-    <div class="summary-row"><span>Proteína total</span><span id="sumProt">0 g</span></div>
     <div class="summary-row total"><span>Total</span><span id="sumPrice">$0</span></div>
     <button class="confirm-btn" id="confirmBtn" disabled>Confirmar pedido</button>
   </div>
@@ -1442,19 +1470,94 @@ const SEDES = {
 };
 
 const ITEMS = [
-  {id:'b1', cat:'batidos', name:'Fresa Power', desc:'Fresa, whey vainilla, avena y leche de almendra.', cal:320, prot:32, carb:38, fat:6, price:8500, img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&crop=center'},
-  {id:'b2', cat:'batidos', name:'Choco Almendra Beast', desc:'Cacao, mantequilla de almendra, plátano y whey chocolate.', cal:410, prot:35, carb:42, fat:12, price:9200, img:'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop&crop=center'},
-  {id:'b3', cat:'batidos', name:'Mango Verde Fit', desc:'Mango, espinaca baby, jengibre y whey vainilla.', cal:290, prot:28, carb:40, fat:3, price:8800, img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop&crop=center'},
-  {id:'b4', cat:'batidos', name:'Berry Bomb', desc:'Mix de moras, yogur griego y whey frutos rojos.', cal:300, prot:30, carb:35, fat:5, price:8900, img:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop&crop=center'},
-  {id:'w1', cat:'bowls', name:'Bowl de Avena Proteica', desc:'Avena, whey, banano, mantequilla de maní y granola.', cal:480, prot:34, carb:55, fat:14, price:11500, img:'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop&crop=center'},
-  {id:'w2', cat:'bowls', name:'Bowl Tropical', desc:'Yogur griego, piña, mango, coco y whey vainilla.', cal:350, prot:26, carb:45, fat:8, price:10800, img:'https://images.unsplash.com/photo-1536380272564-5cf07f9a9d5d?w=400&h=300&fit=crop&crop=center'},
-  {id:'w3', cat:'bowls', name:'Bowl Choco Peanut', desc:'Base de cacao, whey, banano, maní y chips de cacao.', cal:420, prot:30, carb:48, fat:13, price:11200, img:'https://images.unsplash.com/photo-1536392706976-e486e2ba7f87?w=400&h=300&fit=crop&crop=center'},
-  {id:'s1', cat:'snacks', name:'Barra Proteica Casera', desc:'Avena, whey, miel y chocolate oscuro 70%.', cal:210, prot:18, carb:22, fat:7, price:5500, img:'https://images.unsplash.com/photo-1558431382-27e303142255?w=400&h=300&fit=crop&crop=center'},
-  {id:'s2', cat:'snacks', name:'Bolitas Energéticas', desc:'Dátiles, whey, coco rallado y cacao.', cal:180, prot:12, carb:20, fat:6, price:5000, img:'https://images.unsplash.com/photo-1590779033100-9f60a05a013d?w=400&h=300&fit=crop&crop=center'},
-  {id:'s3', cat:'snacks', name:'Pudín de Chía Proteico', desc:'Chía, leche de almendra, whey y cacao.', cal:240, prot:20, carb:18, fat:9, price:6200, img:'https://images.unsplash.com/photo-1551269901-5e0d2fa22b07?w=400&h=300&fit=crop&crop=center'},
+  // SMOTHIES
+  {
+    id:'s1', cat:'smothies', name:'Smothie Oreo', 
+    desc:'Delicioso smothie con galleta Oreo y crema de leche.', 
+    cal:420, prot:18, carb:55, fat:16, price:22000,
+    img:'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'s2', cat:'smothies', name:'Smothie Snickers', 
+    desc:'Smothie con sabor a Snickers, chocolate y maní.', 
+    cal:480, prot:20, carb:58, fat:22, price:23000,
+    img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'s3', cat:'smothies', name:'Smothie Frutos Rojos', 
+    desc:'Smothie con mix de frutos rojos y yogur griego.', 
+    cal:280, prot:22, carb:35, fat:6, price:22000,
+    img:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'s4', cat:'smothies', name:'Smothie Mango Maracuyá', 
+    desc:'Smothie tropical con mango y maracuyá.', 
+    cal:270, prot:16, carb:42, fat:4, price:22000,
+    img:'https://images.unsplash.com/photo-1536380272564-5cf07f9a9d5d?w=400&h=300&fit=crop&crop=center'
+  },
+  
+  // PROTEÍNA
+  {
+    id:'p1', cat:'protein', name:'Protein Coffe Latte', 
+    desc:'Café latte con proteína whey, delicioso y energizante.', 
+    cal:210, prot:28, carb:18, fat:5, price:20000,
+    img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'p2', cat:'protein', name:'Smothie Moca Fit', 
+    desc:'Smothie de chocolate con café y proteína.', 
+    cal:350, prot:32, carb:40, fat:10, price:22000,
+    img:'https://images.unsplash.com/photo-1556881286-fc6915169721?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'p3', cat:'protein', name:'Batido Proteína', 
+    desc:'Batido de proteína clásico con whey protein.', 
+    cal:190, prot:35, carb:12, fat:3, price:18000,
+    img:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'p4', cat:'protein', name:'Batido Proteína con Leche de Almendras', 
+    desc:'Batido de proteína con leche de almendras, suave y cremoso.', 
+    cal:220, prot:30, carb:16, fat:7, price:22000,
+    img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&crop=center'
+  },
+  
+  // INTENZE
+  {
+    id:'i1', cat:'intenze', name:'Intenze Curazao', 
+    desc:'Bebida energética sabor curazao azul.', 
+    cal:120, prot:0, carb:30, fat:0, price:16000,
+    img:'https://images.unsplash.com/photo-1518135714426-18e4200405b5?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'i2', cat:'intenze', name:'Intenze Granadilla', 
+    desc:'Bebida energética sabor granadilla.', 
+    cal:115, prot:0, carb:28, fat:0, price:16000,
+    img:'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'i3', cat:'intenze', name:'Intenze Strawberry', 
+    desc:'Bebida energética sabor fresa.', 
+    cal:110, prot:0, carb:27, fat:0, price:16000,
+    img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop&crop=center'
+  },
+  
+  // ESPECIALES
+  {
+    id:'e1', cat:'especiales', name:'Hulk', 
+    desc:'Batido gigante con proteína, frutas y energía extra.', 
+    cal:520, prot:40, carb:60, fat:15, price:18000,
+    img:'https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=400&h=300&fit=crop&crop=center'
+  },
+  {
+    id:'e2', cat:'especiales', name:'The King', 
+    desc:'El batido más completo con proteína, frutas, avena y superalimentos.', 
+    cal:600, prot:45, carb:65, fat:18, price:25000,
+    img:'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop&crop=center'
+  },
 ];
 
-const CAT_LABEL = {batidos:'Batido', bowls:'Bowl', snacks:'Snack'};
+const CAT_LABEL = {smothies:'Smothie', protein:'Proteína', intenze:'Intenze', especiales:'Especial'};
 
 // ============================================
 // ===== ESTADO GLOBAL =====
@@ -1482,8 +1585,6 @@ const cartOverlay = document.getElementById('cartOverlay');
 const cartClose = document.getElementById('cartClose');
 const cartItemsEl = document.getElementById('cartItems');
 const cartCountEl = document.getElementById('cartCount');
-const sumCal = document.getElementById('sumCal');
-const sumProt = document.getElementById('sumProt');
 const sumPrice = document.getElementById('sumPrice');
 const confirmBtn = document.getElementById('confirmBtn');
 const toast = document.getElementById('toast');
@@ -1604,13 +1705,29 @@ function renderCards(){
         <h3>${item.name}</h3>
         <p class="card-desc">${item.desc}</p>
       </div>
-      <div class="facts">
-        <div class="facts-title">Información nutricional</div>
-        <div class="facts-grid">
-          <div class="facts-row"><span>Calorías</span><b>${item.cal} kcal</b></div>
-          <div class="facts-row"><span>Proteína</span><b>${item.prot} g</b></div>
-          <div class="facts-row"><span>Carbohidratos</span><b>${item.carb} g</b></div>
-          <div class="facts-row"><span>Grasa</span><b>${item.fat} g</b></div>
+      <div class="nutrition">
+        <div class="nutrition-title">📊 Información nutricional</div>
+        <div class="nutrition-grid">
+          <div class="nutrition-item">
+            <span class="label">Calorías</span>
+            <span class="value">${item.cal}</span>
+            <span class="unit">kcal</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="label">Proteína</span>
+            <span class="value">${item.prot}</span>
+            <span class="unit">g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="label">Carbos</span>
+            <span class="value">${item.carb}</span>
+            <span class="unit">g</span>
+          </div>
+          <div class="nutrition-item">
+            <span class="label">Grasa</span>
+            <span class="value">${item.fat}</span>
+            <span class="unit">g</span>
+          </div>
         </div>
       </div>
       <div class="card-footer">
@@ -1667,7 +1784,7 @@ grid.addEventListener('click', e => {
 
 function renderCart(){
   const ids = Object.keys(cart).filter(id => cart[id] > 0);
-  let totalCal = 0, totalProt = 0, totalPrice = 0, totalCount = 0;
+  let totalPrice = 0, totalCount = 0;
 
   if(ids.length === 0){
     cartItemsEl.innerHTML = '<p class="cart-empty">Aún no has agregado nada. Elige algo del menú 👀</p>';
@@ -1675,8 +1792,6 @@ function renderCart(){
     cartItemsEl.innerHTML = ids.map(id => {
       const item = ITEMS.find(i => i.id === id);
       const qty = cart[id];
-      totalCal += item.cal * qty;
-      totalProt += item.prot * qty;
       totalPrice += item.price * qty;
       totalCount += qty;
       return `
@@ -1694,8 +1809,6 @@ function renderCart(){
     }).join('');
   }
 
-  sumCal.textContent = totalCal + ' kcal';
-  sumProt.textContent = totalProt + ' g';
   sumPrice.textContent = money(totalPrice);
   cartCountEl.textContent = totalCount;
   confirmBtn.disabled = totalCount === 0;
@@ -1829,7 +1942,7 @@ checkoutSubmit.addEventListener('click', function() {
     resumen += `  • ${item.name}  x${qty}  =  ${money(subtotal)}\n`;
   });
 
-  // Construir mensaje para WhatsApp - VERSIÓN MEJORADA
+  // Construir mensaje para WhatsApp
   let mensaje = ' *NUEVO PEDIDO - INTELLIGENT NUTRITION*\n';
   mensaje += '━'.repeat(32) + '\n\n';
   
@@ -1844,7 +1957,6 @@ checkoutSubmit.addEventListener('click', function() {
   mensaje += ` *Tipo:* ${tipoPedido}\n`;
   mensaje += ` *Cliente:* ${nombre}\n`;
 
-  
   mensaje += '━'.repeat(32) + '\n';
   mensaje += '   *DETALLE DEL PEDIDO*\n';
   mensaje += '━'.repeat(32) + '\n\n';
@@ -1858,7 +1970,7 @@ checkoutSubmit.addEventListener('click', function() {
   
   mensaje += '━'.repeat(32) + '\n';
   mensaje += ' *¡Gracias por tu pedido!*\n';
-  mensaje += `Te esperamos en ${sedeSeleccionada} `;
+  mensaje += `Te esperamos en ${sedeSeleccionada}`;
 
   // Enviar por WhatsApp
   enviarPorWhatsApp(mensaje);
