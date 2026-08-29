@@ -1,2072 +1,498 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTELLIGENT NUTRITION · Batidos y Comida Proteica</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* ============================================ */
-    /* ===== RESET Y VARIABLES ===== */
-    /* ============================================ */
-    :root {
-      --bg: #F5F3F0;
-      --surface: #FFFFFF;
-      --text: #000000;
-      --text-light: #535252;
-      --text-white: #FFFFFF;
-
-      /* Colores corporativos */
-      --primary: #660000;
-      --primary-dark: #4A0000;
-      --primary-light: #8A0000;
-      --secondary: #D20A11;
-      --gray: #A2A1A1;
-      --gray-dark: #535252;
-
-      --accent: #D20A11;
-      --accent-light: #F5E6E6;
-      --accent-glow: rgba(210, 10, 17, 0.12);
-      --border: #E8E3DE;
-      --shadow: 0 8px 40px rgba(0,0,0,0.05);
-      --shadow-hover: 0 16px 60px rgba(102, 0, 0, 0.15);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-      /* Tipografías */
-      --font-title: 'Bebas Neue', 'Impact', sans-serif;
-      --font-ui: 'Inter', 'Manrope', 'Plus Jakarta Sans', 'Helvetica Neue', sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font-ui);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      font-weight: 400;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--secondary);
-    }
-
-    /* ============================================ */
-    /* ===== SEDE OVERLAY ===== */
-    /* ============================================ */
-    .sede-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(102, 0, 0, 0.97);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-    }
-    .sede-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.95);
-    }
-
-    .sede-modal {
-      max-width: 860px;
-      width: 100%;
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 52px 44px 44px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-      text-align: center;
-      animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .sede-modal .logo-image {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 20px;
-      display: block;
-      box-shadow: 0 8px 32px rgba(102, 0, 0, 0.3);
-      border: 3px solid white;
-    }
-
-    .sede-modal h2 {
-      font-family: var(--font-title);
-      font-size: 2.8rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .sede-modal h2 span {
-      color: var(--primary);
-    }
-
-    .sede-modal .subtitle {
-      font-size: 0.9rem;
-      color: var(--gray-dark);
-      margin-bottom: 36px;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    .sedes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-      margin-bottom: 28px;
-    }
-
-    .sede-card {
-      background: var(--bg);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: left;
-      position: relative;
-    }
-
-    .sede-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--secondary);
-    }
-
-    .sede-card.selected {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow-hover);
-    }
-
-    .sede-card.selected::after {
-      content: '✓';
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 4px 16px rgba(102, 0, 0, 0.3);
-    }
-
-    .sede-card-image {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      display: block;
-      background: var(--gray);
-    }
-
-    .sede-card-content {
-      padding: 20px 20px 16px;
-    }
-
-    .sede-card-content h3 {
-      font-family: var(--font-title);
-      font-size: 1.4rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .sede-card-content .sede-address {
-      font-size: 0.8rem;
-      color: var(--gray-dark);
-      margin-bottom: 4px;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    .sede-card-content .sede-hours {
-      font-size: 0.75rem;
-      color: var(--gray-dark);
-      font-weight: 500;
-      font-family: var(--font-ui);
-    }
-
-    .sede-card-content .sede-hours span {
-      display: inline-block;
-      background: var(--surface);
-      padding: 2px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .sede-card .sede-select-indicator {
-      display: block;
-      text-align: center;
-      padding: 10px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--gray-dark);
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      font-family: var(--font-ui);
-      text-transform: uppercase;
-    }
-
-    .sede-card.selected .sede-select-indicator {
-      background: var(--primary);
-      color: var(--text-white);
-    }
-
-    .sede-modal .sede-btn {
-      width: 100%;
-      margin-top: 4px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 18px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      cursor: pointer;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .sede-modal .sede-btn:hover:not(:disabled) {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(102, 0, 0, 0.35);
-    }
-
-    .sede-modal .sede-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ============================================ */
-    /* ===== SITE CONTENT ===== */
-    /* ============================================ */
-    .site-content {
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-    .site-content.visible {
-      opacity: 1;
-    }
-
-    /* ============================================ */
-    /* ===== HEADER ===== */
-    /* ============================================ */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 40px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(232, 227, 222, 0.5);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-    }
-
-    .logo-image {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--primary);
-    }
-
-    .logo-text {
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-    }
-
-    .logo-sub {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.55rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--gray-dark);
-      margin-top: -2px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .sede-indicator {
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: var(--gray-dark);
-      background: var(--bg);
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      display: none;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-    .sede-indicator.show {
-      display: inline-block;
-    }
-
-    .cart-toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: 24px;
-      padding: 10px 22px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.8rem;
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .cart-toggle:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(102, 0, 0, 0.3);
-    }
-
-    .cart-count {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-
-    /* ============================================ */
-    /* ===== HERO ===== */
-    /* ============================================ */
-    .hero {
-      position: relative;
-      padding: 120px 40px 140px;
-      background: linear-gradient(165deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary) 100%);
-      color: var(--text-white);
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -30%;
-      right: -10%;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(210, 10, 17, 0.12) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: 0;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -5%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(162, 161, 161, 0.06) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: 0;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 700px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--gray);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 6px 18px;
-      border-radius: 20px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      font-family: var(--font-ui);
-    }
-
-    .hero h1 {
-      font-family: var(--font-title);
-      font-size: clamp(3.5rem, 8vw, 5.5rem);
-      font-weight: 400;
-      line-height: 1.05;
-      margin-bottom: 18px;
-      letter-spacing: 0.04em;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--gray);
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      font-weight: 300;
-      opacity: 0.85;
-      max-width: 500px;
-      line-height: 1.7;
-      margin-bottom: 36px;
-      font-family: var(--font-ui);
-      letter-spacing: 0.02em;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--secondary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 16px 32px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .hero-cta:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(210, 10, 17, 0.4);
-    }
-
-    /* ============================================ */
-    /* ===== MENU SECTION ===== */
-    /* ============================================ */
-    .menu-section {
-      padding: 64px 40px 100px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .menu-heading {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .menu-heading h2 {
-      font-family: var(--font-title);
-      font-size: clamp(2.5rem, 4vw, 3.4rem);
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .menu-heading h2 span {
-      color: var(--primary);
-    }
-
-    .menu-heading .menu-meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .menu-heading .mono {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--gray-dark);
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    .cambiar-sede {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: var(--font-ui);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .cambiar-sede:hover {
-      color: var(--secondary);
-    }
-
-    /* ============================================ */
-    /* ===== FILTERS ===== */
-    /* ============================================ */
-    .filters {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 36px;
-      padding-bottom: 4px;
-    }
-
-    .filter-btn {
-      padding: 10px 24px;
-      border: 2px solid var(--border);
-      background: transparent;
-      border-radius: 24px;
-      font-family: var(--font-ui);
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--gray-dark);
-      cursor: pointer;
-      transition: var(--transition);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .filter-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--text-white);
-    }
-
-    /* ============================================ */
-    /* ===== GRID ===== */
-    /* ============================================ */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 28px;
-    }
-
-    /* ============================================ */
-    /* ===== CARD ===== */
-    /* ============================================ */
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--primary);
-    }
-
-    .card-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-      background: var(--bg);
-    }
-
-    .card-top {
-      padding: 24px 24px 16px;
-      position: relative;
-    }
-
-    .card[data-cat="smothies"] .card-top {
-      background: linear-gradient(135deg, #FDF2F0 0%, #FBE9E6 100%);
-    }
-    .card[data-cat="protein"] .card-top {
-      background: linear-gradient(135deg, #FDF8F0 0%, #FBF0E0 100%);
-    }
-    .card[data-cat="intenze"] .card-top {
-      background: linear-gradient(135deg, #F2F5F0 0%, #E8EDE5 100%);
-    }
-    .card[data-cat="especiales"] .card-top {
-      background: linear-gradient(135deg, #F0F0F8 0%, #E5E5F0 100%);
-    }
-
-    .card-cat {
-      font-size: 0.55rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--gray-dark);
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 2px 14px;
-      border-radius: 12px;
-      font-family: var(--font-ui);
-    }
-
-    .card-top h3 {
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      font-weight: 400;
-      margin-top: 6px;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .card-desc {
-      font-size: 0.8rem;
-      color: var(--gray-dark);
-      margin-top: 2px;
-      line-height: 1.5;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    /* ===== NUTRICIÓN ===== */
-    .nutrition {
-      padding: 16px 24px 14px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .nutrition-title {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--gray-dark);
-      margin-bottom: 8px;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 6px;
-    }
-
-    .nutrition-item {
-      text-align: center;
-      padding: 6px 4px;
-      background: var(--surface);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      transition: var(--transition);
-    }
-
-    .card:hover .nutrition-item {
-      border-color: var(--primary);
-    }
-
-    .nutrition-item .label {
-      font-size: 0.5rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--gray-dark);
-      display: block;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-item .value {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-      display: block;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-item .unit {
-      font-size: 0.5rem;
-      font-weight: 400;
-      color: var(--gray);
-      font-family: var(--font-ui);
-    }
-
-    .card-footer {
-      padding: 14px 24px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: auto;
-      background: var(--surface);
-    }
-
-    .price {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text);
-      font-family: var(--font-ui);
-      letter-spacing: -0.02em;
-    }
-
-    .add-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 22px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .add-btn:hover {
-      background: var(--secondary);
-      transform: scale(1.03);
-      box-shadow: 0 8px 20px rgba(210, 10, 17, 0.3);
-    }
-
-    /* ============================================ */
-    /* ===== CART DRAWER ===== */
-    /* ============================================ */
-    .cart-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      z-index: 48;
-    }
-    .cart-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .cart-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: min(440px, 92vw);
-      background: var(--surface);
-      box-shadow: -8px 0 60px rgba(0, 0, 0, 0.08);
-      z-index: 49;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: flex;
-      flex-direction: column;
-    }
-    .cart-drawer.open {
-      transform: translateX(0);
-    }
-
-    .cart-head {
-      padding: 24px 28px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .cart-head h3 {
-      font-family: var(--font-title);
-      font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-    }
-
-    .cart-head h3 span {
-      color: var(--primary);
-    }
-
-    .cart-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      color: var(--gray-dark);
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: var(--transition);
-      font-family: var(--font-ui);
-    }
-
-    .cart-close:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .cart-items {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 28px;
-    }
-
-    .cart-empty {
-      text-align: center;
-      color: var(--gray-dark);
-      font-size: 0.9rem;
-      padding: 40px 0;
-      font-family: var(--font-ui);
-      font-weight: 400;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      gap: 12px;
-    }
-
-    .cart-item-info {
-      flex: 1;
-    }
-
-    .cart-item-name {
-      font-family: var(--font-title);
-      font-size: 1.1rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-    }
-
-    .cart-item-meta {
-      font-size: 0.7rem;
-      color: var(--gray-dark);
-      margin-top: 2px;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .qty-controls button {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-ui);
-    }
-
-    .qty-controls button:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    .qty-controls span {
-      font-weight: 700;
-      min-width: 28px;
-      text-align: center;
-      font-family: var(--font-ui);
-    }
-
-    .order-options {
-      padding: 18px 28px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .order-options label {
-      display: block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--gray-dark);
-      margin-bottom: 4px;
-      font-family: var(--font-ui);
-    }
-
-    .order-options select,
-    .order-options input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface);
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      color: var(--text);
-      transition: var(--transition);
-      margin-bottom: 8px;
-      font-weight: 400;
-    }
-
-    .order-options select:focus,
-    .order-options input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .order-options input {
-      margin-bottom: 0;
-    }
-
-    .order-options input:last-child {
-      margin-bottom: 0;
-    }
-
-    .cart-summary {
-      padding: 18px 28px 24px;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      padding: 4px 0;
-      color: var(--gray-dark);
-      font-family: var(--font-ui);
-      font-weight: 400;
-    }
-
-    .summary-row.total {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text);
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
-      margin-top: 4px;
-    }
-
-    .confirm-btn {
-      width: 100%;
-      margin-top: 16px;
-      padding: 16px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .confirm-btn:hover:not(:disabled) {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(210, 10, 17, 0.3);
-    }
-
-    .confirm-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ============================================ */
-    /* ===== CHECKOUT MODAL ===== */
-    /* ============================================ */
-    .checkout-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 60;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .checkout-modal.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .checkout-content {
-      background: var(--surface);
-      border-radius: var(--radius);
-      max-width: 520px;
-      width: 100%;
-      padding: 44px 36px 36px;
-      box-shadow: var(--shadow-hover);
-      transform: scale(0.95);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .checkout-modal.open .checkout-content {
-      transform: scale(1);
-    }
-
-    .checkout-content h2 {
-      font-family: var(--font-title);
-      font-size: 2.2rem;
-      font-weight: 400;
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .checkout-content h2 span {
-      color: var(--primary);
-    }
-
-    .checkout-content .checkout-sub {
-      color: var(--gray-dark);
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-      font-family: var(--font-ui);
-    }
-
-    .checkout-content label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.8rem;
-      margin-bottom: 4px;
-      font-family: var(--font-ui);
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .checkout-content input,
-    .checkout-content textarea,
-    .checkout-content select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-      transition: var(--transition);
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .checkout-content input:focus,
-    .checkout-content textarea:focus,
-    .checkout-content select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .checkout-content textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .checkout-content .campo-condicional {
-      display: none;
-    }
-    .checkout-content .campo-condicional.visible {
-      display: block;
-    }
-
-    .checkout-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .checkout-actions button {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .checkout-actions .btn-cancel {
-      background: var(--bg);
-      color: var(--gray-dark);
-      border: 1px solid var(--border);
-    }
-
-    .checkout-actions .btn-cancel:hover {
-      background: var(--border);
-    }
-
-    .checkout-actions .btn-submit {
-      background: var(--primary);
-      color: var(--text-white);
-    }
-
-    .checkout-actions .btn-submit:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(210, 10, 17, 0.3);
-    }
-
-    /* ============================================ */
-    /* ===== TOAST ===== */
-    /* ============================================ */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
-      transform: translate(-50%, 20px);
-      background: var(--text);
-      color: var(--text-white);
-      padding: 16px 32px;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 500;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s ease;
-      z-index: 70;
-      box-shadow: var(--shadow-hover);
-      letter-spacing: 0.02em;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    /* ============================================ */
-    /* ===== FOOTER ===== */
-    /* ============================================ */
-    footer {
-      background: var(--primary-dark);
-      color: var(--text-white);
-      padding: 56px 40px;
-      text-align: center;
-      border-top: 3px solid var(--secondary);
-    }
-
-    footer .brand {
-      font-family: var(--font-title);
-      font-size: 2.4rem;
-      font-weight: 400;
-      color: var(--gray);
-      margin-bottom: 8px;
-      letter-spacing: 0.04em;
-    }
-
-    footer .brand span {
-      color: var(--text-white);
-    }
-
-    footer p {
-      font-size: 0.8rem;
-      font-weight: 300;
-      opacity: 0.7;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    /* ============================================ */
-    /* ===== RESPONSIVE ===== */
-    /* ============================================ */
-    @media (max-width: 768px) {
-      .site-header {
-        padding: 12px 16px;
-      }
-      .hero {
-        padding: 80px 20px 100px;
-      }
-      .menu-section {
-        padding: 40px 16px 80px;
-      }
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      .sede-modal {
-        padding: 32px 20px 28px;
-      }
-      .sedes-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      .sede-card-image {
-        height: 140px;
-      }
-      .header-actions .sede-indicator {
-        display: none !important;
-      }
-      .card-image {
-        height: 180px;
-      }
-      .checkout-content {
-        padding: 28px 20px 24px;
-      }
-      .nutrition-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .hero h1 {
-        font-size: 3rem;
-      }
-      .sede-modal h2 {
-        font-size: 2.2rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .logo-text {
-        font-size: 1.2rem;
-      }
-      .logo-sub {
-        font-size: 0.5rem;
-      }
-      .cart-toggle {
-        padding: 8px 14px;
-        font-size: 0.7rem;
-      }
-      .hero h1 {
-        font-size: 2.4rem;
-      }
-      .card-image {
-        height: 160px;
-      }
-      .sede-card-image {
-        height: 120px;
-      }
-      .sede-modal h2 {
-        font-size: 1.8rem;
-      }
-      .checkout-actions {
-        flex-direction: column;
-      }
-      .nutrition-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .filters {
-        gap: 6px;
-      }
-      .filter-btn {
-        padding: 6px 14px;
-        font-size: 0.6rem;
-      }
-      .card-top h3 {
-        font-size: 1.3rem;
-      }
-      .cart-head h3 {
-        font-size: 1.4rem;
-      }
-      footer .brand {
-        font-size: 1.8rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTELLIGENT NUTRITION - Sistema de Ventas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<!-- ============================================ -->
-<!-- ===== SEDE OVERLAY ===== -->
-<!-- ============================================ -->
-<div class="sede-overlay" id="sedeOverlay">
-  <div class="sede-modal">
-    <img class="logo-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-YCt7EYTNBdULEoTP2SoK5d9F4-0P1bHmjLAnWSfN8Q&s" alt="INTELLIGENT NUTRITION Logo">
-    <h2>INTELLIGENT <span>NUTRITION</span></h2>
-    <p class="subtitle">Elige tu sede para empezar</p>
-
-    <div class="sedes-grid" id="sedesGrid">
-      <!-- Las tarjetas se generan con JavaScript -->
-    </div>
-
-    <button class="sede-btn" id="sedeBtn" disabled>ENTRAR AL MENÚ →</button>
-  </div>
-</div>
-
-<!-- ============================================ -->
-<!-- ===== CONTENIDO PRINCIPAL ===== -->
-<!-- ============================================ -->
-<div class="site-content" id="siteContent">
-
-<header class="site-header">
-  <a href="#" class="logo">
-    <img class="logo-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-YCt7EYTNBdULEoTP2SoK5d9F4-0P1bHmjLAnWSfN8Q&s" alt="INTELLIGENT NUTRITION Logo">
-    <div>
-      <span class="logo-text">INTELLIGENT <span>NUTRITION</span></span>
-      <span class="logo-sub">Batidos &amp; Proteína</span>
-    </div>
-  </a>
-  <div class="header-actions">
-    <span class="sede-indicator" id="sedeIndicator">📍 Viva - Tunja</span>
-    <button class="cart-toggle" id="cartToggle" aria-haspopup="true" aria-expanded="false">
-      Pedido
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
-</header>
-
-<section class="hero">
-  <div class="hero-inner">
-    <span class="hero-badge">✦ Nutrición inteligente · Proteína medida</span>
-    <h1>Nutrición que <em>sí</em> sabe bien.</h1>
-    <p>Cada batido, bowl y snack tiene su ficha nutricional a la vista: sin promesas vagas, solo los números que necesitas para armar tu día.</p>
-    <a href="#menu" class="hero-cta">
-      Ver el menú
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </a>
-  </div>
-</section>
-
-<section class="menu-section" id="menu">
-  <div class="menu-heading">
-    <h2>Nuestro <span>menú</span></h2>
-    <div class="menu-meta">
-      <span class="mono" id="sedeMenuIndicator">📍 Viva - Tunja</span>
-      <button class="cambiar-sede" id="cambiarSedeBtn">Cambiar sede</button>
-    </div>
-  </div>
-
-  <div class="filters" role="tablist">
-    <button class="filter-btn active" data-filter="todos">Todos</button>
-    <button class="filter-btn" data-filter="smothies">Smothies</button>
-    <button class="filter-btn" data-filter="protein">Proteína</button>
-    <button class="filter-btn" data-filter="intenze">Intenze</button>
-    <button class="filter-btn" data-filter="especiales">Especiales</button>
-  </div>
-
-  <div class="grid" id="grid"></div>
-</section>
-
-<footer>
-  <div class="brand">INTELLIGENT <span>NUTRITION</span></div>
-  <p id="footerInfo">Cra 10 #23-45, Tunja, Boyacá · Lun–Sáb 7:00–20:00 · @intelligent.nutrition</p>
-</footer>
-
-</div>
-
-<!-- ============================================ -->
-<!-- ===== CARRITO ===== -->
-<!-- ============================================ -->
-<div class="cart-overlay" id="cartOverlay"></div>
-<aside class="cart-drawer" id="cartDrawer">
-  <div class="cart-head">
-    <h3>Tu <span>pedido</span></h3>
-    <button class="cart-close" id="cartClose">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems">
-    <p class="cart-empty">Aún no has agregado nada. Elige algo del menú 👀</p>
-  </div>
-
-  <div class="order-options">
-    <label for="tipoPedido">Tipo de pedido</label>
-    <select id="tipoPedido">
-      <option value="En el local">🍽️ Consumir en el local</option>
-      <option value="Para llevar">📦 Para llevar</option>
-      <option value="Domicilio">🏠 Domicilio</option>
-    </select>
-    <input type="text" id="direccion" placeholder="📌 Dirección de entrega" style="display:none;">
-  </div>
-
-  <div class="cart-summary">
-    <div class="summary-row total"><span>Total</span><span id="sumPrice">$0</span></div>
-    <button class="confirm-btn" id="confirmBtn" disabled>Confirmar pedido</button>
-  </div>
-</aside>
-
-<!-- ============================================ -->
-<!-- ===== CHECKOUT MODAL ===== -->
-<!-- ============================================ -->
-<div class="checkout-modal" id="checkoutModal">
-  <div class="checkout-content">
-    <h2>📋 Confirmar <span>pedido</span></h2>
-    <p class="checkout-sub">Completa tus datos para finalizar el pedido en <strong id="checkoutSede">Viva - Tunja</strong></p>
-
-    <!-- Campos siempre visibles -->
-    <label for="nombreCliente">👤 Nombre completo</label>
-    <input type="text" id="nombreCliente" placeholder="Ej: Carlos Rodríguez" required>
-
-    <!-- Campos condicionales (solo para domicilio) -->
-    <div id="camposDomicilio" class="campo-condicional">
-      <label for="direccionCliente">📍 Dirección de entrega</label>
-      <input type="text" id="direccionCliente" placeholder="Ej: Calle 10 #20-30, Barrio Centro">
-
-      <label for="metodoPago">💳 Método de pago</label>
-      <select id="metodoPago">
-        <option value="Efectivo">Efectivo</option>
-        <option value="Nequi">Nequi</option>
-        <option value="Daviplata">Daviplata</option>
-        <option value="Transferencia bancaria">Transferencia bancaria</option>
-        <option value="Tarjeta (en app)">Tarjeta (en app)</option>
-      </select>
-    </div>
-
-    <label for="observacionesCliente">💬 Observaciones (opcional)</label>
-    <textarea id="observacionesCliente" placeholder="¿Alguna nota para tu pedido? (ej: sin azúcar, extra proteína, etc.)"></textarea>
-
-    <div class="checkout-actions">
-      <button class="btn-cancel" id="checkoutCancel">Cancelar</button>
-      <button class="btn-submit" id="checkoutSubmit">✅ Enviar pedido</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-  // ============================================
-  // ===== DATOS =====
-  // ============================================
-  const SEDES = {
-    'Viva - Tunja': {
-      direccion: 'Cra 10 #23-45, Tunja, Boyacá',
-      horario: 'Lun–Sáb 7:00–20:00',
-      telefono: '573103322428',
-      imagen: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=600&h=400&fit=crop&crop=center',
-      emoji: '🏙️'
-    },
-    'Sogamoso': {
-      direccion: 'Calle 12 #8-30, Sogamoso, Boyacá',
-      horario: 'Lun–Sáb 7:00–19:30',
-      telefono: '573001234570',
-      imagen: 'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=600&h=400&fit=crop&crop=center',
-      emoji: '🏔️'
-    }
-  };
-
-  const ITEMS = [
-    // SMOTHIES
-    {
-      id:'s1', cat:'smothies', name:'Smothie Oreo',
-      desc:'Delicioso smothie con galleta Oreo y crema de leche.',
-      cal:420, prot:18, carb:55, fat:16, price:22000,
-      img:'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'s2', cat:'smothies', name:'Smothie Snickers',
-      desc:'Smothie con sabor a Snickers, chocolate y maní.',
-      cal:480, prot:20, carb:58, fat:22, price:23000,
-      img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'s3', cat:'smothies', name:'Smothie Frutos Rojos',
-      desc:'Smothie con mix de frutos rojos y yogur griego.',
-      cal:280, prot:22, carb:35, fat:6, price:22000,
-      img:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'s4', cat:'smothies', name:'Smothie Mango Maracuyá',
-      desc:'Smothie tropical con mango y maracuyá.',
-      cal:270, prot:16, carb:42, fat:4, price:22000,
-      img:'https://images.unsplash.com/photo-1536380272564-5cf07f9a9d5d?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // PROTEÍNA
-    {
-      id:'p1', cat:'protein', name:'Protein Coffe Latte',
-      desc:'Café latte con proteína whey, delicioso y energizante.',
-      cal:210, prot:28, carb:18, fat:5, price:20000,
-      img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'p2', cat:'protein', name:'Smothie Moca Fit',
-      desc:'Smothie de chocolate con café y proteína.',
-      cal:350, prot:32, carb:40, fat:10, price:22000,
-      img:'https://images.unsplash.com/photo-1556881286-fc6915169721?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'p3', cat:'protein', name:'Batido Proteína',
-      desc:'Batido de proteína clásico con whey protein.',
-      cal:190, prot:35, carb:12, fat:3, price:18000,
-      img:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'p4', cat:'protein', name:'Batido Proteína con Leche de Almendras',
-      desc:'Batido de proteína con leche de almendras, suave y cremoso.',
-      cal:220, prot:30, carb:16, fat:7, price:22000,
-      img:'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // INTENZE
-    {
-      id:'i1', cat:'intenze', name:'Intenze Curazao',
-      desc:'Bebida energética sabor curazao azul.',
-      cal:120, prot:0, carb:30, fat:0, price:16000,
-      img:'https://images.unsplash.com/photo-1518135714426-18e4200405b5?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'i2', cat:'intenze', name:'Intenze Granadilla',
-      desc:'Bebida energética sabor granadilla.',
-      cal:115, prot:0, carb:28, fat:0, price:16000,
-      img:'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'i3', cat:'intenze', name:'Intenze Strawberry',
-      desc:'Bebida energética sabor fresa.',
-      cal:110, prot:0, carb:27, fat:0, price:16000,
-      img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // ESPECIALES
-    {
-      id:'e1', cat:'especiales', name:'Hulk',
-      desc:'Batido gigante con proteína, frutas y energía extra.',
-      cal:520, prot:40, carb:60, fat:15, price:18000,
-      img:'https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'e2', cat:'especiales', name:'The King',
-      desc:'El batido más completo con proteína, frutas, avena y superalimentos.',
-      cal:600, prot:45, carb:65, fat:18, price:25000,
-      img:'https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=400&h=300&fit=crop&crop=center'
-    },
-  ];
-
-  const CAT_LABEL = {smothies:'Smothie', protein:'Proteína', intenze:'Intenze', especiales:'Especial'};
-
-  // ============================================
-  // ===== ESTADO GLOBAL =====
-  // ============================================
-  let sedeSeleccionada = null;
-  let sedeTemporal = null;
-  const cart = {};
-
-  // ============================================
-  // ===== REFERENCIAS DOM =====
-  // ============================================
-  const sedeOverlay = document.getElementById('sedeOverlay');
-  const sedeBtn = document.getElementById('sedeBtn');
-  const sedesGrid = document.getElementById('sedesGrid');
-  const sedeIndicator = document.getElementById('sedeIndicator');
-  const sedeMenuIndicator = document.getElementById('sedeMenuIndicator');
-  const cambiarSedeBtn = document.getElementById('cambiarSedeBtn');
-  const footerInfo = document.getElementById('footerInfo');
-  const grid = document.getElementById('grid');
-  const siteContent = document.getElementById('siteContent');
-
-  const cartToggle = document.getElementById('cartToggle');
-  const cartDrawer = document.getElementById('cartDrawer');
-  const cartOverlay = document.getElementById('cartOverlay');
-  const cartClose = document.getElementById('cartClose');
-  const cartItemsEl = document.getElementById('cartItems');
-  const cartCountEl = document.getElementById('cartCount');
-  const sumPrice = document.getElementById('sumPrice');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const toast = document.getElementById('toast');
-
-  const tipoPedidoSelect = document.getElementById('tipoPedido');
-  const direccionInput = document.getElementById('direccion');
-
-  // Checkout modal
-  const checkoutModal = document.getElementById('checkoutModal');
-  const checkoutSede = document.getElementById('checkoutSede');
-  const nombreCliente = document.getElementById('nombreCliente');
-  const direccionCliente = document.getElementById('direccionCliente');
-  const metodoPago = document.getElementById('metodoPago');
-  const camposDomicilio = document.getElementById('camposDomicilio');
-  const observacionesCliente = document.getElementById('observacionesCliente');
-  const checkoutCancel = document.getElementById('checkoutCancel');
-  const checkoutSubmit = document.getElementById('checkoutSubmit');
-
-  // ============================================
-  // ===== RENDER SEDES =====
-  // ============================================
-  function renderSedes() {
-    const sedeKeys = Object.keys(SEDES);
-    sedesGrid.innerHTML = sedeKeys.map(key => {
-      const info = SEDES[key];
-      return `
-        <div class="sede-card" data-sede="${key}">
-          <img class="sede-card-image" src="${info.imagen}" alt="${key}" loading="lazy">
-          <div class="sede-card-content">
-            <h3>${info.emoji} ${key}</h3>
-            <p class="sede-address">📍 ${info.direccion}</p>
-            <p class="sede-hours">⏰ <span>${info.horario}</span></p>
-          </div>
-          <div class="sede-select-indicator">Seleccionar sede</div>
+    <!-- ============================================
+    PANTALLA DE LOGIN
+    ============================================ -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">🏪</div>
+                <h1>INTELLIGENT NUTRITION</h1>
+                <p>Sistema de Ventas</p>
+            </div>
+            <div class="login-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>👤 Usuario</label>
+                        <input type="text" id="loginUser" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🔒 Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">🔓 Iniciar Sesión</button>
+                </form>
+                <p id="loginError" class="login-error"></p>
+                <div class="login-help">
+                    <p>Usuarios por defecto:</p>
+                    <div class="user-badge">admin / admin123 <span class="badge-admin">Admin</span></div>
+                    <div class="user-badge">vendedor / ventas123 <span class="badge-vendor">Vendedor</span></div>
+                </div>
+            </div>
         </div>
-      `;
-    }).join('');
+    </div>
 
-    document.querySelectorAll('.sede-card').forEach(card => {
-      card.addEventListener('click', function() {
-        const sede = this.dataset.sede;
-        document.querySelectorAll('.sede-card').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        sedeTemporal = sede;
-        sedeBtn.disabled = false;
-      });
-    });
-  }
-  renderSedes();
+    <!-- ============================================
+    INTERFAZ PRINCIPAL
+    ============================================ -->
+    <div id="mainApp" style="display:none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">🏪</span>
+                    <span class="logo-text">INTELLIGENT NUTRITION</span>
+                    <span class="logo-sub">Batidos & Proteína</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="fechaActual" class="fecha"></span>
+                <span id="userInfo" class="user-info"></span>
+                <span id="rolBadge" class="rol-badge"></span>
+                <button onclick="logout()" class="btn-logout">🚪 Salir</button>
+            </div>
+        </header>
 
-  // ============================================
-  // ===== FUNCIONES DE SEDE =====
-  // ============================================
-  function seleccionarSede(sede) {
-    if (!sede || !SEDES[sede]) return;
-    sedeSeleccionada = sede;
-    const info = SEDES[sede];
+        <!-- Barra de navegación -->
+        <nav class="nav-bar">
+            <div class="nav-filtros">
+                <button class="nav-btn active" data-filtro="Todos" onclick="filtrarProductos('Todos')">Todos</button>
+                <button class="nav-btn" data-filtro="Smothies" onclick="filtrarProductos('Smothies')">Smothies</button>
+                <button class="nav-btn" data-filtro="Proteína" onclick="filtrarProductos('Proteína')">Proteína</button>
+                <button class="nav-btn" data-filtro="Creatina" onclick="filtrarProductos('Creatina')">Creatina</button>
+                <button class="nav-btn" data-filtro="Pre-entrenos" onclick="filtrarProductos('Pre-entrenos')">Pre-entrenos</button>
+                <button class="nav-btn" data-filtro="Vitaminas" onclick="filtrarProductos('Vitaminas')">Vitaminas</button>
+                <button class="nav-btn" data-filtro="Especiales" onclick="filtrarProductos('Especiales')">Especiales</button>
+                <button class="nav-btn" data-filtro="Snacks" onclick="filtrarProductos('Snacks')">Snacks</button>
+            </div>
+            <div class="nav-busqueda">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar productos..." onkeyup="buscarProductos()">
+            </div>
+        </nav>
 
-    sedeIndicator.textContent = `📍 ${sede}`;
-    sedeIndicator.classList.add('show');
-    sedeMenuIndicator.textContent = `📍 ${sede}`;
-    footerInfo.textContent = `${info.direccion} · ${info.horario} · @intelligent.nutrition`;
-
-    sedeOverlay.classList.add('hidden');
-    siteContent.classList.add('visible');
-    localStorage.setItem('intelligent_nutrition_sede', sede);
-  }
-
-  function mostrarSelectorSede() {
-    sedeTemporal = null;
-    sedeBtn.disabled = true;
-    document.querySelectorAll('.sede-card').forEach(c => c.classList.remove('selected'));
-    sedeOverlay.classList.remove('hidden');
-    siteContent.classList.remove('visible');
-    sedeIndicator.classList.remove('show');
-  }
-
-  // ============================================
-  // ===== EVENTOS DE SEDE =====
-  // ============================================
-  sedeBtn.addEventListener('click', function() {
-    if (sedeTemporal && SEDES[sedeTemporal]) {
-      seleccionarSede(sedeTemporal);
-    }
-  });
-
-  cambiarSedeBtn.addEventListener('click', function() {
-    if (confirm('¿Cambiar de sede? Se perderá el carrito actual.')) {
-      Object.keys(cart).forEach(id => cart[id] = 0);
-      renderCart();
-      mostrarSelectorSede();
-    }
-  });
-
-  // ============================================
-  // ===== RESTAURAR SEDE =====
-  // ============================================
-  function restaurarSede() {
-    const sedeGuardada = localStorage.getItem('intelligent_nutrition_sede');
-    if (sedeGuardada && SEDES[sedeGuardada]) {
-      seleccionarSede(sedeGuardada);
-    } else {
-      mostrarSelectorSede();
-    }
-  }
-
-  // ============================================
-  // ===== RENDER CARDS =====
-  // ============================================
-  function money(n){ return '$' + n.toLocaleString('es-CO'); }
-
-  function renderCards(){
-    grid.innerHTML = ITEMS.map(item => `
-      <article class="card" data-cat="${item.cat}">
-        <img class="card-image" src="${item.img}" alt="${item.name}" loading="lazy">
-        <div class="card-top">
-          <span class="card-cat">${CAT_LABEL[item.cat]}</span>
-          <h3>${item.name}</h3>
-          <p class="card-desc">${item.desc}</p>
+        <!-- Barra de acciones -->
+        <div class="action-bar">
+            <div class="action-left">
+                <button class="btn-action btn-admin" onclick="abrirGestionInventario()">📦 Inventario</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionUsuarios()">👥 Usuarios</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionCompradores()">👤 Compradores</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionRecetas()">📋 Recetas</button>
+                <button class="btn-action btn-admin" onclick="abrirSincronizacion()">🔄 Sincronizar</button>
+                <button class="btn-action btn-turno" onclick="gestionarTurno()" id="btnTurno">▶️ Iniciar Turno</button>
+                <button class="btn-action btn-historial" onclick="verHistorialTurnos()">📋 Historial</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
         </div>
-        <div class="nutrition">
-          <div class="nutrition-title">📊 Información nutricional</div>
-          <div class="nutrition-grid">
-            <div class="nutrition-item">
-              <span class="label">Calorías</span>
-              <span class="value">${item.cal}</span>
-              <span class="unit">kcal</span>
+
+        <!-- Cuerpo principal -->
+        <div class="main-content">
+            <!-- Productos -->
+            <div class="productos-container">
+                <div id="productosGrid" class="productos-grid">
+                    <!-- Productos renderizados por JS -->
+                </div>
             </div>
-            <div class="nutrition-item">
-              <span class="label">Proteína</span>
-              <span class="value">${item.prot}</span>
-              <span class="unit">g</span>
+
+            <!-- Carrito -->
+            <div class="carrito-container">
+                <div class="carrito-header">
+                    <span>🛒 Tu Pedido</span>
+                    <span id="cartCount">0 items</span>
+                </div>
+                <div id="cartList" class="cart-list">
+                    <p class="cart-empty">🛒 Tu carrito está vacío</p>
+                    <p class="cart-empty-sub">Elige productos del menú</p>
+                </div>
+                <div class="cart-total">
+                    <span>TOTAL:</span>
+                    <span id="cartTotal">$0</span>
+                </div>
+                <div class="cart-actions">
+                    <button onclick="vaciarCarrito()" class="btn-cart-empty">🗑️ Vaciar</button>
+                    <button onclick="abrirCheckout()" class="btn-cart-checkout">✅ Confirmar Pedido</button>
+                </div>
             </div>
-            <div class="nutrition-item">
-              <span class="label">Carbos</span>
-              <span class="value">${item.carb}</span>
-              <span class="unit">g</span>
-            </div>
-            <div class="nutrition-item">
-              <span class="label">Grasa</span>
-              <span class="value">${item.fat}</span>
-              <span class="unit">g</span>
-            </div>
-          </div>
         </div>
-        <div class="card-footer">
-          <span class="price">${money(item.price)}</span>
-          <button class="add-btn" data-id="${item.id}">+ Agregar</button>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <span id="statusLabel">✅ Listo</span>
+            <div class="status-stats">
+                <span id="statsProductos">📦 0 productos</span>
+                <span id="statsVentas">💰 $0 vendidos</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ============================================
+    MODALES
+    ============================================ -->
+
+    <!-- Modal de Checkout -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Confirmar Pedido</h2>
+                <span class="modal-close" onclick="cerrarCheckout()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="checkoutResumen"></div>
+
+                <div class="form-group">
+                    <label>🎯 Descuento Adicional</label>
+                    <div class="descuento-options">
+                        <label><input type="radio" name="tipoDescuento" value="porcentaje" checked> % Porcentaje</label>
+                        <label><input type="radio" name="tipoDescuento" value="pesos"> $ Pesos</label>
+                    </div>
+                    <div class="descuento-input">
+                        <input type="number" id="descuentoAdicional" value="0" min="0" step="0.01">
+                        <button onclick="aplicarDescuento()">✅ Aplicar</button>
+                    </div>
+                    <span id="descuentoAplicadoLabel"></span>
+                    <span id="totalFinalLabel" class="total-final"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>👤 Datos del Comprador</label>
+                    <input type="text" id="checkoutNombre" placeholder="Nombre del comprador">
+                    <input type="text" id="checkoutTelefono" placeholder="Teléfono (opcional)">
+                    <button onclick="buscarComprador()" class="btn-secondary">🔍 Buscar comprador</button>
+                </div>
+
+                <div class="form-group">
+                    <label>💳 Método de pago</label>
+                    <div class="pago-options">
+                        <button class="btn-pago active" data-pago="Efectivo" onclick="seleccionarPago(this, 'Efectivo')">💵 Efectivo</button>
+                        <button class="btn-pago" data-pago="Transferencia" onclick="seleccionarPago(this, 'Transferencia')">🏦 Transferencia</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📌 Observaciones</label>
+                    <textarea id="checkoutObservaciones" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarCheckout()" class="btn-secondary">❌ Cancelar</button>
+                <button onclick="confirmarPedido()" class="btn-primary">✅ Enviar Pedido</button>
+            </div>
         </div>
-      </article>
-    `).join('');
-  }
-  renderCards();
+    </div>
 
-  // ============================================
-  // ===== FILTERS =====
-  // ============================================
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const f = btn.dataset.filter;
-      document.querySelectorAll('.card').forEach(card => {
-        card.style.display = (f === 'todos' || card.dataset.cat === f) ? '' : 'none';
-      });
-    });
-  });
-
-  // ============================================
-  // ===== CART LOGIC =====
-  // ============================================
-  function openCart(){
-    cartDrawer.classList.add('open');
-    cartOverlay.classList.add('open');
-    cartToggle.setAttribute('aria-expanded','true');
-  }
-  function closeCart(){
-    cartDrawer.classList.remove('open');
-    cartOverlay.classList.remove('open');
-    cartToggle.setAttribute('aria-expanded','false');
-  }
-
-  cartToggle.addEventListener('click', openCart);
-  cartClose.addEventListener('click', closeCart);
-  cartOverlay.addEventListener('click', closeCart);
-
-  grid.addEventListener('click', e => {
-    const btn = e.target.closest('.add-btn');
-    if(!btn) return;
-    const id = btn.dataset.id;
-    cart[id] = (cart[id] || 0) + 1;
-    renderCart();
-    showToast('Agregado al pedido');
-    openCart();
-  });
-
-  function renderCart(){
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    let totalPrice = 0, totalCount = 0;
-
-    if(ids.length === 0){
-      cartItemsEl.innerHTML = '<p class="cart-empty">Aún no has agregado nada. Elige algo del menú 👀</p>';
-    } else {
-      cartItemsEl.innerHTML = ids.map(id => {
-        const item = ITEMS.find(i => i.id === id);
-        const qty = cart[id];
-        totalPrice += item.price * qty;
-        totalCount += qty;
-        return `
-          <div class="cart-item">
-            <div class="cart-item-info">
-              <div class="cart-item-name">${item.name}</div>
-              <div class="cart-item-meta">${money(item.price)} · ${item.prot}g prot</div>
+    <!-- Modal de Gestión de Inventario -->
+    <div id="inventarioModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📦 Gestión de Inventario</h2>
+                <span class="modal-close" onclick="cerrarInventario()">&times;</span>
             </div>
-            <div class="qty-controls">
-              <button data-id="${id}" data-action="dec">−</button>
-              <span>${qty}</span>
-              <button data-id="${id}" data-action="inc">+</button>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <input type="text" id="buscarInventario" placeholder="🔍 Buscar producto..." onkeyup="filtrarInventario()">
+                        <table id="tablaInventario">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Costo</th>
+                                    <th>Venta</th>
+                                    <th>Ganancia</th>
+                                    <th>Margen</th>
+                                    <th>Stock</th>
+                                    <th>Desc.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaInventarioBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>✏️ Editar Producto</h3>
+                        <div class="form-group">
+                            <label>Código</label>
+                            <input type="text" id="invCodigo">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="invNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="invCategoria">
+                                <option>Smothies</option>
+                                <option>Proteína</option>
+                                <option>Creatina</option>
+                                <option>Pre-entrenos</option>
+                                <option>Vitaminas</option>
+                                <option>Especiales</option>
+                                <option>Snacks</option>
+                                <option>Insumos</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Costo ($)</label>
+                                <input type="number" id="invCosto" oninput="calcularGanancia()">
+                            </div>
+                            <div class="form-group">
+                                <label>Venta ($)</label>
+                                <input type="number" id="invVenta" oninput="calcularGanancia()">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ganancia ($)</label>
+                                <input type="text" id="invGanancia" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Margen (%)</label>
+                                <input type="text" id="invMargen" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock</label>
+                                <input type="number" id="invStock">
+                            </div>
+                            <div class="form-group">
+                                <label>Descuento (%)</label>
+                                <input type="number" id="invDescuento" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarProducto()" class="btn-success">💾 Guardar</button>
+                            <button onclick="eliminarProducto()" class="btn-danger">🗑️ Eliminar</button>
+                            <button onclick="cargarProductoSeleccionado()" class="btn-secondary">📋 Cargar</button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>`;
-      }).join('');
-    }
+        </div>
+    </div>
 
-    sumPrice.textContent = money(totalPrice);
-    cartCountEl.textContent = totalCount;
-    confirmBtn.disabled = totalCount === 0;
-  }
-  renderCart();
+    <!-- Modal de Gestión de Usuarios -->
+    <div id="usuariosModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👥 Gestión de Usuarios</h2>
+                <span class="modal-close" onclick="cerrarModal('usuariosModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <table id="tablaUsuarios">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaUsuariosBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>✏️ Nuevo / Editar Usuario</h3>
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="usrUsuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="usrNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña <small>(dejar vacío para no cambiarla)</small></label>
+                            <input type="password" id="usrPassword">
+                        </div>
+                        <div class="form-group">
+                            <label>Rol</label>
+                            <select id="usrRol">
+                                <option>Vendedor</option>
+                                <option>Administrador</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarUsuario()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  cartItemsEl.addEventListener('click', e => {
-    const btn = e.target.closest('button[data-action]');
-    if(!btn) return;
-    const id = btn.dataset.id;
-    if(btn.dataset.action === 'inc') cart[id]++;
-    if(btn.dataset.action === 'dec') cart[id] = Math.max(0, cart[id] - 1);
-    renderCart();
-  });
+    <!-- Modal de Gestión de Compradores -->
+    <div id="compradoresModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Compradores</h2>
+                <span class="modal-close" onclick="cerrarModal('compradoresModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <input type="text" id="buscarCompradorInput" placeholder="🔍 Buscar comprador..." onkeyup="filtrarCompradores()">
+                        <table id="tablaCompradores">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Compras</th>
+                                    <th>Total gastado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaCompradoresBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>➕ Nuevo Comprador</h3>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="compNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="compTelefono">
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarComprador()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  // ============================================
-  // ===== TIPO DE PEDIDO =====
-  // ============================================
-  tipoPedidoSelect.addEventListener('change', function() {
-    if(this.value === 'Domicilio') {
-      direccionInput.style.display = 'block';
-      direccionInput.required = true;
-      direccionInput.placeholder = '📌 Ingresa tu dirección completa';
-    } else {
-      direccionInput.style.display = 'none';
-      direccionInput.required = false;
-      direccionInput.value = '';
-    }
-  });
+    <!-- Modal de Gestión de Recetas -->
+    <div id="recetasModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Recetas</h2>
+                <span class="modal-close" onclick="cerrarModal('recetasModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <table id="tablaRecetas">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Ingredientes</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaRecetasBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>➕ Nueva Receta</h3>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="recNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Ingredientes</label>
+                            <textarea id="recIngredientes" rows="4" placeholder="Un ingrediente por línea"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarReceta()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  // ============================================
-  // ===== CHECKOUT MODAL =====
-  // ============================================
-  function openCheckout() {
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    if(ids.length === 0) {
-      showToast('⚠️ Agrega productos al carrito primero');
-      return;
-    }
-    if (!sedeSeleccionada) {
-      showToast('⚠️ Selecciona una sede primero');
-      return;
-    }
+    <!-- Modal de Historial de Turnos -->
+    <div id="historialModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Historial de Turnos</h2>
+                <span class="modal-close" onclick="cerrarModal('historialModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table id="tablaHistorial">
+                    <thead>
+                        <tr>
+                            <th>Vendedor</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Pedidos</th>
+                            <th>Total vendido</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaHistorialBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    const tipoPedido = tipoPedidoSelect.value;
-    if(tipoPedido === 'Domicilio' && !direccionInput.value.trim()) {
-      showToast('⚠️ Por favor ingresa la dirección de entrega');
-      direccionInput.focus();
-      return;
-    }
+    <!-- Modal de Reporte de Turno generado -->
+    <div id="reporteTurnoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Turno cerrado</h2>
+                <span class="modal-close" onclick="cerrarModal('reporteTurnoModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>El reporte de ventas del turno se generó correctamente.</p>
+                <p id="reporteTurnoResumen" class="total-final"></p>
+                <p style="font-size:12px;color:#5b6b64;">El PDF se abrió en una pestaña nueva. También puedes verlo o descargarlo aquí:</p>
+            </div>
+            <div class="modal-footer">
+                <button id="reporteTurnoVerBtn" class="btn-secondary">👁️ Ver reporte</button>
+                <button id="reporteTurnoDescargarBtn" class="btn-primary">⬇️ Descargar PDF</button>
+            </div>
+        </div>
+    </div>
 
-    checkoutSede.textContent = sedeSeleccionada;
-    nombreCliente.value = '';
-    direccionCliente.value = '';
-    observacionesCliente.value = '';
+    <!-- Modal de Recibo generado -->
+    <div id="reciboModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧾 Pedido confirmado</h2>
+                <span class="modal-close" onclick="cerrarModal('reciboModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>El pedido se registró correctamente.</p>
+                <p id="reciboTotal" class="total-final"></p>
+                <p style="font-size:12px;color:#5b6b64;">El recibo se abrió en una pestaña nueva. También puedes verlo o descargarlo aquí:</p>
+            </div>
+            <div class="modal-footer">
+                <button id="reciboVerBtn" class="btn-secondary">👁️ Ver recibo</button>
+                <button id="reciboDescargarBtn" class="btn-primary">⬇️ Descargar PDF</button>
+            </div>
+        </div>
+    </div>
 
-    // Mostrar/ocultar campos de domicilio
-    if (tipoPedido === 'Domicilio') {
-      camposDomicilio.classList.add('visible');
-      direccionCliente.required = true;
-      metodoPago.required = true;
-    } else {
-      camposDomicilio.classList.remove('visible');
-      direccionCliente.required = false;
-      metodoPago.required = false;
-    }
+    <!-- Modal de Sincronización -->
+    <div id="sincronizacionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔄 Sincronización</h2>
+                <span class="modal-close" onclick="cerrarModal('sincronizacionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="syncResultado" class="sync-resultado">Presiona "Sincronizar ahora" para actualizar los datos.</div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal('sincronizacionModal')" class="btn-secondary">Cerrar</button>
+                <button onclick="ejecutarSincronizacion()" class="btn-primary">🔄 Sincronizar ahora</button>
+            </div>
+        </div>
+    </div>
 
-    checkoutModal.classList.add('open');
-    setTimeout(() => nombreCliente.focus(), 100);
-  }
-
-  function closeCheckout() {
-    checkoutModal.classList.remove('open');
-  }
-
-  confirmBtn.addEventListener('click', openCheckout);
-  checkoutCancel.addEventListener('click', closeCheckout);
-  checkoutModal.addEventListener('click', e => {
-    if(e.target === checkoutModal) closeCheckout();
-  });
-
-  // ============================================
-  // ===== ENVIAR PEDIDO POR WHATSAPP =====
-  // ============================================
-  function enviarPorWhatsApp(mensaje) {
-    const telefono = SEDES[sedeSeleccionada].telefono;
-    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
-  }
-
-  checkoutSubmit.addEventListener('click', function() {
-    const nombre = nombreCliente.value.trim();
-    const observaciones = observacionesCliente.value.trim();
-    const tipoPedido = tipoPedidoSelect.value;
-
-    if(!nombre) {
-      showToast('⚠️ Por favor ingresa tu nombre');
-      nombreCliente.focus();
-      return;
-    }
-
-    // Validar campos de domicilio si aplica
-    let direccion = 'N/A';
-    let pago = 'N/A';
-    if (tipoPedido === 'Domicilio') {
-      direccion = direccionCliente.value.trim();
-      pago = metodoPago.value;
-      if(!direccion) {
-        showToast('⚠️ Por favor ingresa la dirección de entrega');
-        direccionCliente.focus();
-        return;
-      }
-    }
-
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    if(ids.length === 0) {
-      showToast('⚠️ No hay productos en el carrito');
-      return;
-    }
-
-    const infoSede = SEDES[sedeSeleccionada];
-
-    // Generar resumen del pedido
-    let total = 0;
-    let resumen = '';
-    ids.forEach(id => {
-      const item = ITEMS.find(i => i.id === id);
-      const qty = cart[id];
-      const subtotal = item.price * qty;
-      total += subtotal;
-      resumen += `  • ${item.name}  x${qty}  =  ${money(subtotal)}\n`;
-    });
-
-    // Construir mensaje para WhatsApp
-    let mensaje = ' *NUEVO PEDIDO - INTELLIGENT NUTRITION*\n';
-    mensaje += '━'.repeat(32) + '\n\n';
-
-    mensaje += ` *Sede:* ${sedeSeleccionada}\n`;
-    mensaje += ` *Dirección:* ${infoSede.direccion}\n`;
-
-    if (tipoPedido === 'Domicilio') {
-      mensaje += ` *Entrega:* ${direccion}\n`;
-      mensaje += ` *Pago:* ${pago}\n`;
-    }
-
-    mensaje += ` *Tipo:* ${tipoPedido}\n`;
-    mensaje += ` *Cliente:* ${nombre}\n`;
-
-    mensaje += '━'.repeat(32) + '\n';
-    mensaje += '   *DETALLE DEL PEDIDO*\n';
-    mensaje += '━'.repeat(32) + '\n\n';
-    mensaje += resumen;
-    mensaje += '\n' + '━'.repeat(32) + '\n';
-    mensaje += `   *TOTAL: ${money(total)}*\n\n`;
-
-    if (observaciones) {
-      mensaje += ` *Observaciones:* ${observaciones}\n\n`;
-    }
-
-    mensaje += '━'.repeat(32) + '\n';
-    mensaje += ' *¡Gracias por tu pedido!*\n';
-    mensaje += `Te esperamos en ${sedeSeleccionada}`;
-
-    // Enviar por WhatsApp
-    enviarPorWhatsApp(mensaje);
-
-    // Limpiar carrito
-    setTimeout(() => {
-      Object.keys(cart).forEach(id => cart[id] = 0);
-      renderCart();
-      closeCheckout();
-      closeCart();
-      direccionInput.value = '';
-      direccionInput.style.display = 'none';
-      tipoPedidoSelect.value = 'En el local';
-      showToast('✅ Pedido enviado por WhatsApp');
-    }, 300);
-  });
-
-  // ============================================
-  // ===== TOAST =====
-  // ============================================
-  let toastTimer;
-  function showToast(msg){
-    clearTimeout(toastTimer);
-    toast.textContent = msg;
-    toast.classList.add('show');
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  // ============================================
-  // ===== INICIALIZAR =====
-  // ============================================
-  restaurarSede();
-</script>
-
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
