@@ -1,0 +1,445 @@
+{
+  "usuarios": [
+    {
+      "usuario": "admin",
+      "password": "admin123",
+      "rol": "Administrador",
+      "nombre": "Administrador"
+    },
+    {
+      "usuario": "vendedor",
+      "password": "ventas123",
+      "rol": "Vendedor",
+      "nombre": "Vendedor"
+    }
+  ],
+  "productos": [
+    {
+      "codigo": "SM001",
+      "nombre": "Smoothie Fres",
+      "categoria": "Smothies",
+      "costo": 4000.0,
+      "venta": 9000.0,
+      "stock": 20,
+      "descuento": 0.0
+    },
+    {
+      "codigo": "SM002",
+      "nombre": "Smoothie Mango",
+      "categoria": "Smothies",
+      "costo": 4200,
+      "venta": 9500,
+      "stock": 16,
+      "descuento": 0
+    },
+    {
+      "codigo": "PR001",
+      "nombre": "Proteína Whey 1kg",
+      "categoria": "Proteína",
+      "costo": 45000,
+      "venta": 89000,
+      "stock": 9,
+      "descuento": 5
+    },
+    {
+      "codigo": "PR002",
+      "nombre": "Proteína Vegana 1kg",
+      "categoria": "Proteína",
+      "costo": 52000,
+      "venta": 99000,
+      "stock": 4,
+      "descuento": 0
+    },
+    {
+      "codigo": "CR001",
+      "nombre": "Creatina Monohidratada 300g",
+      "categoria": "Creatina",
+      "costo": 22000,
+      "venta": 45000,
+      "stock": 9,
+      "descuento": 0
+    },
+    {
+      "codigo": "PE001",
+      "nombre": "Pre-entreno Explosivo",
+      "categoria": "Pre-entrenos",
+      "costo": 28000,
+      "venta": 55000,
+      "stock": 7,
+      "descuento": 10
+    },
+    {
+      "codigo": "VT001",
+      "nombre": "Multivitamínico",
+      "categoria": "Vitaminas",
+      "costo": 15000,
+      "venta": 32000,
+      "stock": 11,
+      "descuento": 0
+    },
+    {
+      "codigo": "ES001",
+      "nombre": "Combo Batido + Proteína",
+      "categoria": "Especiales",
+      "costo": 12000,
+      "venta": 25000,
+      "stock": 5,
+      "descuento": 0
+    },
+    {
+      "codigo": "SN001",
+      "nombre": "Barra Proteica",
+      "categoria": "Snacks",
+      "costo": 3000,
+      "venta": 7000,
+      "stock": 28,
+      "descuento": 0
+    },
+    {
+      "codigo": "SMOO1",
+      "nombre": "taco",
+      "categoria": "Pre-entrenos",
+      "costo": 5000.0,
+      "venta": 10000.0,
+      "stock": 7,
+      "descuento": 0.0
+    }
+  ],
+  "compradores": [
+    {
+      "id": "e67cfb8e",
+      "nombre": "carlos",
+      "telefono": "",
+      "compras": 0,
+      "total_gastado": 0
+    },
+    {
+      "id": "0b4bb2da",
+      "nombre": "carlos",
+      "telefono": "",
+      "compras": 0,
+      "total_gastado": 0
+    }
+  ],
+  "recetas": [],
+  "turno_actual": {
+    "id": "75d05cf1",
+    "usuario": "admin",
+    "inicio": "2026-08-28T18:59:47",
+    "fin": null,
+    "total_ventas": 0,
+    "cantidad_pedidos": 0,
+    "ventas": []
+  },
+  "historial_turnos": [
+    {
+      "id": "e498f4fd",
+      "usuario": "admin",
+      "inicio": "2026-08-28T18:34:38",
+      "fin": "2026-08-28T18:35:55",
+      "total_ventas": 208000.0,
+      "cantidad_pedidos": 3
+    },
+    {
+      "id": "5abd3a05",
+      "usuario": "admin",
+      "inicio": "2026-08-28T18:41:49",
+      "fin": "2026-08-28T18:43:59",
+      "total_ventas": 49500.0,
+      "cantidad_pedidos": 1
+    },
+    {
+      "id": "ee371344",
+      "usuario": "admin",
+      "inicio": "2026-08-28T18:45:16",
+      "fin": "2026-08-28T18:56:51",
+      "total_ventas": 198050.0,
+      "cantidad_pedidos": 4,
+      "ventas": [
+        "9718a35a"
+      ]
+    },
+    {
+      "id": "7a45273c",
+      "usuario": "vendedor",
+      "inicio": "2026-08-28T18:57:09",
+      "fin": "2026-08-28T18:57:36",
+      "total_ventas": 202500.0,
+      "cantidad_pedidos": 1,
+      "ventas": [
+        "f76e9fd0"
+      ]
+    }
+  ],
+  "ventas": [
+    {
+      "id": "ff5d72b1",
+      "fecha": "2026-08-28T18:35:02",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "CR001",
+          "nombre": "Creatina Monohidratada 300g",
+          "cantidad": 1,
+          "precio_unitario": 45000.0,
+          "subtotal": 45000.0
+        },
+        {
+          "codigo": "PR002",
+          "nombre": "Proteína Vegana 1kg",
+          "cantidad": 1,
+          "precio_unitario": 99000.0,
+          "subtotal": 99000.0
+        }
+      ],
+      "subtotal": 144000.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 144000.0,
+      "comprador": {
+        "nombre": "carlos",
+        "telefono": ""
+      },
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    },
+    {
+      "id": "f24f11c8",
+      "fecha": "2026-08-28T18:35:42",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "VT001",
+          "nombre": "Multivitamínico",
+          "cantidad": 1,
+          "precio_unitario": 32000.0,
+          "subtotal": 32000.0
+        }
+      ],
+      "subtotal": 32000.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 32000.0,
+      "comprador": null,
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    },
+    {
+      "id": "4651149d",
+      "fecha": "2026-08-28T18:35:50",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "VT001",
+          "nombre": "Multivitamínico",
+          "cantidad": 1,
+          "precio_unitario": 32000.0,
+          "subtotal": 32000.0
+        }
+      ],
+      "subtotal": 32000.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 32000.0,
+      "comprador": null,
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    },
+    {
+      "id": "8deccc42",
+      "fecha": "2026-08-28T18:41:55",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "PE001",
+          "nombre": "Pre-entreno Explosivo",
+          "cantidad": 1,
+          "precio_unitario": 49500.0,
+          "subtotal": 49500.0
+        }
+      ],
+      "subtotal": 49500.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 49500.0,
+      "comprador": null,
+      "metodo_pago": "Transferencia",
+      "observaciones": ""
+    },
+    {
+      "id": "9dc5f8ad",
+      "fecha": "2026-08-28T18:45:28",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "SMOO1",
+          "nombre": "taco",
+          "cantidad": 2,
+          "precio_unitario": 10000.0,
+          "subtotal": 20000.0
+        }
+      ],
+      "subtotal": 20000.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 20000.0,
+      "comprador": {
+        "nombre": "carlos",
+        "telefono": ""
+      },
+      "metodo_pago": "Transferencia",
+      "observaciones": ""
+    },
+    {
+      "id": "eea824ca",
+      "fecha": "2026-08-28T18:49:29",
+      "vendedor": "admin",
+      "items": [
+        {
+          "codigo": "PR001",
+          "nombre": "Proteína Whey 1kg",
+          "cantidad": 1,
+          "precio_unitario": 84550.0,
+          "subtotal": 84550.0
+        },
+        {
+          "codigo": "CR001",
+          "nombre": "Creatina Monohidratada 300g",
+          "cantidad": 1,
+          "precio_unitario": 45000.0,
+          "subtotal": 45000.0
+        }
+      ],
+      "subtotal": 129550.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 129550.0,
+      "comprador": null,
+      "metodo_pago": "Transferencia",
+      "observaciones": ""
+    },
+    {
+      "id": "b588c264",
+      "fecha": "2026-08-28T18:51:07",
+      "vendedor": "vendedor",
+      "items": [
+        {
+          "codigo": "VT001",
+          "nombre": "Multivitamínico",
+          "cantidad": 1,
+          "precio_unitario": 32000.0,
+          "subtotal": 32000.0
+        },
+        {
+          "codigo": "SN001",
+          "nombre": "Barra Proteica",
+          "cantidad": 1,
+          "precio_unitario": 7000.0,
+          "subtotal": 7000.0
+        }
+      ],
+      "subtotal": 39000.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 39000.0,
+      "comprador": null,
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    },
+    {
+      "id": "9718a35a",
+      "fecha": "2026-08-28T18:56:43",
+      "vendedor": "vendedor",
+      "items": [
+        {
+          "codigo": "SM002",
+          "nombre": "Smoothie Mango",
+          "cantidad": 1,
+          "precio_unitario": 9500.0,
+          "subtotal": 9500.0
+        }
+      ],
+      "subtotal": 9500.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 9500.0,
+      "comprador": null,
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    },
+    {
+      "id": "f76e9fd0",
+      "fecha": "2026-08-28T18:57:20",
+      "vendedor": "vendedor",
+      "items": [
+        {
+          "codigo": "SM002",
+          "nombre": "Smoothie Mango",
+          "cantidad": 1,
+          "precio_unitario": 9500.0,
+          "subtotal": 9500.0
+        },
+        {
+          "codigo": "SN001",
+          "nombre": "Barra Proteica",
+          "cantidad": 1,
+          "precio_unitario": 7000.0,
+          "subtotal": 7000.0
+        },
+        {
+          "codigo": "SMOO1",
+          "nombre": "taco",
+          "cantidad": 1,
+          "precio_unitario": 10000.0,
+          "subtotal": 10000.0
+        },
+        {
+          "codigo": "PR002",
+          "nombre": "Proteína Vegana 1kg",
+          "cantidad": 1,
+          "precio_unitario": 99000.0,
+          "subtotal": 99000.0
+        },
+        {
+          "codigo": "CR001",
+          "nombre": "Creatina Monohidratada 300g",
+          "cantidad": 1,
+          "precio_unitario": 45000.0,
+          "subtotal": 45000.0
+        },
+        {
+          "codigo": "VT001",
+          "nombre": "Multivitamínico",
+          "cantidad": 1,
+          "precio_unitario": 32000.0,
+          "subtotal": 32000.0
+        }
+      ],
+      "subtotal": 202500.0,
+      "descuento_adicional": {
+        "tipo": "porcentaje",
+        "valor": 0.0
+      },
+      "total": 202500.0,
+      "comprador": null,
+      "metodo_pago": "Efectivo",
+      "observaciones": ""
+    }
+  ]
+}

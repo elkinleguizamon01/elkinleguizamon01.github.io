@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INTELLIGENT NUTRITION - Sistema de Ventas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ============================================
+    PANTALLA DE LOGIN
+    ============================================ -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">🏪</div>
+                <h1>INTELLIGENT NUTRITION</h1>
+                <p>Sistema de Ventas</p>
+            </div>
+            <div class="login-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>👤 Usuario</label>
+                        <input type="text" id="loginUser" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🔒 Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">🔓 Iniciar Sesión</button>
+                </form>
+                <p id="loginError" class="login-error"></p>
+                <div class="login-help">
+                    <p>Usuarios por defecto:</p>
+                    <div class="user-badge">admin / admin123 <span class="badge-admin">Admin</span></div>
+                    <div class="user-badge">vendedor / ventas123 <span class="badge-vendor">Vendedor</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+    INTERFAZ PRINCIPAL
+    ============================================ -->
+    <div id="mainApp" style="display:none;">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">🏪</span>
+                    <span class="logo-text">INTELLIGENT NUTRITION</span>
+                    <span class="logo-sub">Batidos & Proteína</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <span id="fechaActual" class="fecha"></span>
+                <span id="userInfo" class="user-info"></span>
+                <span id="rolBadge" class="rol-badge"></span>
+                <button onclick="logout()" class="btn-logout">🚪 Salir</button>
+            </div>
+        </header>
+
+        <!-- Barra de navegación -->
+        <nav class="nav-bar">
+            <div class="nav-filtros">
+                <button class="nav-btn active" data-filtro="Todos" onclick="filtrarProductos('Todos')">Todos</button>
+                <button class="nav-btn" data-filtro="Smothies" onclick="filtrarProductos('Smothies')">Smothies</button>
+                <button class="nav-btn" data-filtro="Proteína" onclick="filtrarProductos('Proteína')">Proteína</button>
+                <button class="nav-btn" data-filtro="Creatina" onclick="filtrarProductos('Creatina')">Creatina</button>
+                <button class="nav-btn" data-filtro="Pre-entrenos" onclick="filtrarProductos('Pre-entrenos')">Pre-entrenos</button>
+                <button class="nav-btn" data-filtro="Vitaminas" onclick="filtrarProductos('Vitaminas')">Vitaminas</button>
+                <button class="nav-btn" data-filtro="Especiales" onclick="filtrarProductos('Especiales')">Especiales</button>
+                <button class="nav-btn" data-filtro="Snacks" onclick="filtrarProductos('Snacks')">Snacks</button>
+            </div>
+            <div class="nav-busqueda">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar productos..." onkeyup="buscarProductos()">
+            </div>
+        </nav>
+
+        <!-- Barra de acciones -->
+        <div class="action-bar">
+            <div class="action-left">
+                <button class="btn-action btn-admin" onclick="abrirGestionInventario()">📦 Inventario</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionUsuarios()">👥 Usuarios</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionCompradores()">👤 Compradores</button>
+                <button class="btn-action btn-admin" onclick="abrirGestionRecetas()">📋 Recetas</button>
+                <button class="btn-action btn-admin" onclick="abrirSincronizacion()">🔄 Sincronizar</button>
+                <button class="btn-action btn-turno" onclick="gestionarTurno()" id="btnTurno">▶️ Iniciar Turno</button>
+                <button class="btn-action btn-historial" onclick="verHistorialTurnos()">📋 Historial</button>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <!-- Cuerpo principal -->
+        <div class="main-content">
+            <!-- Productos -->
+            <div class="productos-container">
+                <div id="productosGrid" class="productos-grid">
+                    <!-- Productos renderizados por JS -->
+                </div>
+            </div>
+
+            <!-- Carrito -->
+            <div class="carrito-container">
+                <div class="carrito-header">
+                    <span>🛒 Tu Pedido</span>
+                    <span id="cartCount">0 items</span>
+                </div>
+                <div id="cartList" class="cart-list">
+                    <p class="cart-empty">🛒 Tu carrito está vacío</p>
+                    <p class="cart-empty-sub">Elige productos del menú</p>
+                </div>
+                <div class="cart-total">
+                    <span>TOTAL:</span>
+                    <span id="cartTotal">$0</span>
+                </div>
+                <div class="cart-actions">
+                    <button onclick="vaciarCarrito()" class="btn-cart-empty">🗑️ Vaciar</button>
+                    <button onclick="abrirCheckout()" class="btn-cart-checkout">✅ Confirmar Pedido</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <span id="statusLabel">✅ Listo</span>
+            <div class="status-stats">
+                <span id="statsProductos">📦 0 productos</span>
+                <span id="statsVentas">💰 $0 vendidos</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ============================================
+    MODALES
+    ============================================ -->
+
+    <!-- Modal de Checkout -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Confirmar Pedido</h2>
+                <span class="modal-close" onclick="cerrarCheckout()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="checkoutResumen"></div>
+
+                <div class="form-group">
+                    <label>🎯 Descuento Adicional</label>
+                    <div class="descuento-options">
+                        <label><input type="radio" name="tipoDescuento" value="porcentaje" checked> % Porcentaje</label>
+                        <label><input type="radio" name="tipoDescuento" value="pesos"> $ Pesos</label>
+                    </div>
+                    <div class="descuento-input">
+                        <input type="number" id="descuentoAdicional" value="0" min="0" step="0.01">
+                        <button onclick="aplicarDescuento()">✅ Aplicar</button>
+                    </div>
+                    <span id="descuentoAplicadoLabel"></span>
+                    <span id="totalFinalLabel" class="total-final"></span>
+                </div>
+
+                <div class="form-group">
+                    <label>👤 Datos del Comprador</label>
+                    <input type="text" id="checkoutNombre" placeholder="Nombre del comprador">
+                    <input type="text" id="checkoutTelefono" placeholder="Teléfono (opcional)">
+                    <button onclick="buscarComprador()" class="btn-secondary">🔍 Buscar comprador</button>
+                </div>
+
+                <div class="form-group">
+                    <label>💳 Método de pago</label>
+                    <div class="pago-options">
+                        <button class="btn-pago active" data-pago="Efectivo" onclick="seleccionarPago(this, 'Efectivo')">💵 Efectivo</button>
+                        <button class="btn-pago" data-pago="Transferencia" onclick="seleccionarPago(this, 'Transferencia')">🏦 Transferencia</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📌 Observaciones</label>
+                    <textarea id="checkoutObservaciones" rows="2"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarCheckout()" class="btn-secondary">❌ Cancelar</button>
+                <button onclick="confirmarPedido()" class="btn-primary">✅ Enviar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gestión de Inventario -->
+    <div id="inventarioModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📦 Gestión de Inventario</h2>
+                <span class="modal-close" onclick="cerrarInventario()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <input type="text" id="buscarInventario" placeholder="🔍 Buscar producto..." onkeyup="filtrarInventario()">
+                        <table id="tablaInventario">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th>Costo</th>
+                                    <th>Venta</th>
+                                    <th>Ganancia</th>
+                                    <th>Margen</th>
+                                    <th>Stock</th>
+                                    <th>Desc.</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaInventarioBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>✏️ Editar Producto</h3>
+                        <div class="form-group">
+                            <label>Código</label>
+                            <input type="text" id="invCodigo">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="invNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="invCategoria">
+                                <option>Smothies</option>
+                                <option>Proteína</option>
+                                <option>Creatina</option>
+                                <option>Pre-entrenos</option>
+                                <option>Vitaminas</option>
+                                <option>Especiales</option>
+                                <option>Snacks</option>
+                                <option>Insumos</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Costo ($)</label>
+                                <input type="number" id="invCosto" oninput="calcularGanancia()">
+                            </div>
+                            <div class="form-group">
+                                <label>Venta ($)</label>
+                                <input type="number" id="invVenta" oninput="calcularGanancia()">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Ganancia ($)</label>
+                                <input type="text" id="invGanancia" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Margen (%)</label>
+                                <input type="text" id="invMargen" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Stock</label>
+                                <input type="number" id="invStock">
+                            </div>
+                            <div class="form-group">
+                                <label>Descuento (%)</label>
+                                <input type="number" id="invDescuento" min="0" max="100">
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarProducto()" class="btn-success">💾 Guardar</button>
+                            <button onclick="eliminarProducto()" class="btn-danger">🗑️ Eliminar</button>
+                            <button onclick="cargarProductoSeleccionado()" class="btn-secondary">📋 Cargar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gestión de Usuarios -->
+    <div id="usuariosModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👥 Gestión de Usuarios</h2>
+                <span class="modal-close" onclick="cerrarModal('usuariosModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <table id="tablaUsuarios">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Nombre</th>
+                                    <th>Rol</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaUsuariosBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>✏️ Nuevo / Editar Usuario</h3>
+                        <div class="form-group">
+                            <label>Usuario</label>
+                            <input type="text" id="usrUsuario">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="usrNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Contraseña <small>(dejar vacío para no cambiarla)</small></label>
+                            <input type="password" id="usrPassword">
+                        </div>
+                        <div class="form-group">
+                            <label>Rol</label>
+                            <select id="usrRol">
+                                <option>Vendedor</option>
+                                <option>Administrador</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarUsuario()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gestión de Compradores -->
+    <div id="compradoresModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>👤 Compradores</h2>
+                <span class="modal-close" onclick="cerrarModal('compradoresModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <input type="text" id="buscarCompradorInput" placeholder="🔍 Buscar comprador..." onkeyup="filtrarCompradores()">
+                        <table id="tablaCompradores">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Teléfono</th>
+                                    <th>Compras</th>
+                                    <th>Total gastado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaCompradoresBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>➕ Nuevo Comprador</h3>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="compNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" id="compTelefono">
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarComprador()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Gestión de Recetas -->
+    <div id="recetasModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Recetas</h2>
+                <span class="modal-close" onclick="cerrarModal('recetasModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="inventario-layout">
+                    <div class="inventario-tabla">
+                        <table id="tablaRecetas">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Ingredientes</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaRecetasBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="inventario-form">
+                        <h3>➕ Nueva Receta</h3>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" id="recNombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Ingredientes</label>
+                            <textarea id="recIngredientes" rows="4" placeholder="Un ingrediente por línea"></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button onclick="guardarReceta()" class="btn-success">💾 Guardar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Historial de Turnos -->
+    <div id="historialModal" class="modal modal-large">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Historial de Turnos</h2>
+                <span class="modal-close" onclick="cerrarModal('historialModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <table id="tablaHistorial">
+                    <thead>
+                        <tr>
+                            <th>Vendedor</th>
+                            <th>Inicio</th>
+                            <th>Fin</th>
+                            <th>Pedidos</th>
+                            <th>Total vendido</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaHistorialBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Reporte de Turno generado -->
+    <div id="reporteTurnoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📊 Turno cerrado</h2>
+                <span class="modal-close" onclick="cerrarModal('reporteTurnoModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>El reporte de ventas del turno se generó correctamente.</p>
+                <p id="reporteTurnoResumen" class="total-final"></p>
+                <p style="font-size:12px;color:#5b6b64;">El PDF se abrió en una pestaña nueva. También puedes verlo o descargarlo aquí:</p>
+            </div>
+            <div class="modal-footer">
+                <button id="reporteTurnoVerBtn" class="btn-secondary">👁️ Ver reporte</button>
+                <button id="reporteTurnoDescargarBtn" class="btn-primary">⬇️ Descargar PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Recibo generado -->
+    <div id="reciboModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🧾 Pedido confirmado</h2>
+                <span class="modal-close" onclick="cerrarModal('reciboModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>El pedido se registró correctamente.</p>
+                <p id="reciboTotal" class="total-final"></p>
+                <p style="font-size:12px;color:#5b6b64;">El recibo se abrió en una pestaña nueva. También puedes verlo o descargarlo aquí:</p>
+            </div>
+            <div class="modal-footer">
+                <button id="reciboVerBtn" class="btn-secondary">👁️ Ver recibo</button>
+                <button id="reciboDescargarBtn" class="btn-primary">⬇️ Descargar PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Sincronización -->
+    <div id="sincronizacionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔄 Sincronización</h2>
+                <span class="modal-close" onclick="cerrarModal('sincronizacionModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="syncResultado" class="sync-resultado">Presiona "Sincronizar ahora" para actualizar los datos.</div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="cerrarModal('sincronizacionModal')" class="btn-secondary">Cerrar</button>
+                <button onclick="ejecutarSincronizacion()" class="btn-primary">🔄 Sincronizar ahora</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

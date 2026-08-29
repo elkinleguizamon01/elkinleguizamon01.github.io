@@ -1,0 +1,12 @@
+{
+  "admin": {
+    "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+    "nombre": "Administrador",
+    "rol": "admin"
+  },
+  "vendedor": {
+    "password": "e2151232843fc5ee75d0c8bfc0c74bdcdace97b001a7dab658f7a27ecc8d93f5",
+    "nombre": "Vendedor",
+    "rol": "vendedor"
+  }
+}

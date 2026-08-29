@@ -1,0 +1,62 @@
+{
+  "S001": {
+    "codigo": "S001",
+    "nombre": "Smothie Oreo",
+    "categoria": "Smothies",
+    "precio_costo": 12000,
+    "precio_venta": 22000,
+    "stock": 10,
+    "descuento": 0,
+    "ganancia": 10000,
+    "margen": 45.5,
+    "precio": 22000
+  },
+  "S002": {
+    "codigo": "S002",
+    "nombre": "Smothie Snickers",
+    "categoria": "Smothies",
+    "precio_costo": 13000,
+    "precio_venta": 23000,
+    "stock": 8,
+    "descuento": 0,
+    "ganancia": 10000,
+    "margen": 43.5,
+    "precio": 23000
+  },
+  "S003": {
+    "codigo": "S003",
+    "nombre": "Smothie Frutos Rojos",
+    "categoria": "Smothies",
+    "precio_costo": 12000,
+    "precio_venta": 22000,
+    "stock": 12,
+    "descuento": 0,
+    "ganancia": 10000,
+    "margen": 45.5,
+    "precio": 22000
+  },
+  "P001": {
+    "codigo": "P001",
+    "nombre": "Protein Coffee Latte",
+    "categoria": "Proteína",
+    "precio_costo": 10000,
+    "precio_venta": 20000,
+    "stock": 15,
+    "descuento": 0,
+    "ganancia": 10000,
+    "margen": 50.0,
+    "precio": 20000
+  },
+  "E001": {
+    "codigo": "E001",
+    "nombre": "Hulk",
+    "categoria": "Especiales",
+    "precio_costo": 10000,
+    "precio_venta": 18000,
+    "stock": 3,
+    "descuento": 0,
+    "ganancia": 8000,
+    "margen": 44.4,
+    "precio": 18000
+  }
+}
