@@ -1,2637 +1,456 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CustomWear · Insumos Personalizados y Uniformes</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* ============================================ */
-    /* ===== RESET Y VARIABLES ===== */
-    /* ============================================ */
-    :root {
-      --bg: #F5F3F0;
-      --surface: #FFFFFF;
-      --text: #000000;
-      --text-light: #535252;
-      --text-white: #FFFFFF;
-
-      --primary: #1A5276;
-      --primary-dark: #0E2F44;
-      --primary-light: #2E86C1;
-      --secondary: #E67E22;
-      --secondary-light: #F0B27A;
-      --gray: #A2A1A1;
-      --gray-dark: #535252;
-
-      --accent: #E67E22;
-      --accent-light: #FDF2E9;
-      --accent-glow: rgba(230, 126, 34, 0.15);
-      --border: #E8E3DE;
-      --shadow: 0 8px 40px rgba(0,0,0,0.05);
-      --shadow-hover: 0 16px 60px rgba(26, 82, 118, 0.15);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-
-      --font-title: 'Bebas Neue', 'Impact', sans-serif;
-      --font-ui: 'Inter', 'Manrope', 'Plus Jakarta Sans', 'Helvetica Neue', sans-serif;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: var(--font-ui);
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      font-weight: 400;
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--secondary);
-    }
-
-    /* ============================================ */
-    /* ===== SEDE OVERLAY - AHORA OCULTO POR DEFECTO ===== */
-    /* ============================================ */
-    .sede-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(26, 82, 118, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.95);
-    }
-    .sede-overlay.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: scale(0.95);
-    }
-    .sede-overlay.visible {
-      opacity: 1;
-      pointer-events: auto;
-      transform: scale(1);
-    }
-
-    .sede-modal {
-      max-width: 860px;
-      width: 100%;
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 52px 44px 44px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-      text-align: center;
-      animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.97);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .sede-modal .logo-image {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin: 0 auto 20px;
-      display: block;
-      box-shadow: 0 8px 32px rgba(26, 82, 118, 0.3);
-      border: 3px solid white;
-    }
-
-    .sede-modal h2 {
-      font-family: var(--font-title);
-      font-size: 2.8rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .sede-modal h2 span {
-      color: var(--primary);
-    }
-
-    .sede-modal .subtitle {
-      font-size: 0.9rem;
-      color: var(--gray-dark);
-      margin-bottom: 36px;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    .sedes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      margin-bottom: 28px;
-    }
-
-    .sede-card {
-      background: var(--bg);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: left;
-      position: relative;
-    }
-
-    .sede-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--secondary);
-    }
-
-    .sede-card.selected {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow-hover);
-    }
-
-    .sede-card.selected::after {
-      content: '✓';
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      box-shadow: 0 4px 16px rgba(26, 82, 118, 0.3);
-    }
-
-    .sede-card-image {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-      background: var(--gray);
-    }
-
-    .sede-card-content {
-      padding: 16px 18px 12px;
-    }
-
-    .sede-card-content h3 {
-      font-family: var(--font-title);
-      font-size: 1.3rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 2px;
-      letter-spacing: 0.04em;
-    }
-
-    .sede-card-content .sede-address {
-      font-size: 0.75rem;
-      color: var(--gray-dark);
-      margin-bottom: 2px;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    .sede-card-content .sede-hours {
-      font-size: 0.7rem;
-      color: var(--gray-dark);
-      font-weight: 500;
-      font-family: var(--font-ui);
-    }
-
-    .sede-card-content .sede-hours span {
-      display: inline-block;
-      background: var(--surface);
-      padding: 2px 12px;
-      border-radius: 12px;
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .sede-card .sede-select-indicator {
-      display: block;
-      text-align: center;
-      padding: 8px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: var(--gray-dark);
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      font-family: var(--font-ui);
-      text-transform: uppercase;
-    }
-
-    .sede-card.selected .sede-select-indicator {
-      background: var(--primary);
-      color: var(--text-white);
-    }
-
-    .sede-modal .sede-btn {
-      width: 100%;
-      margin-top: 4px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      cursor: pointer;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .sede-modal .sede-btn:hover:not(:disabled) {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(26, 82, 118, 0.35);
-    }
-
-    .sede-modal .sede-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ============================================ */
-    /* ===== SITE CONTENT ===== */
-    /* ============================================ */
-    .site-content {
-      opacity: 1;
-      transition: opacity 0.8s ease;
-    }
-    .site-content.visible {
-      opacity: 1;
-    }
-
-    /* ============================================ */
-    /* ===== HEADER ===== */
-    /* ============================================ */
-    .site-header {
-      position: sticky;
-      top: 0;
-      z-index: 40;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 40px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(232, 227, 222, 0.5);
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-    }
-
-    .logo-image {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--primary);
-    }
-
-    .logo-text {
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .logo-text span {
-      color: var(--primary);
-    }
-
-    .logo-sub {
-      display: block;
-      font-family: var(--font-ui);
-      font-size: 0.55rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--gray-dark);
-      margin-top: -2px;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .sede-indicator {
-      font-size: 0.7rem;
-      font-weight: 500;
-      color: var(--gray-dark);
-      background: var(--bg);
-      padding: 6px 16px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      display: inline-block;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    .cart-toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: 24px;
-      padding: 10px 22px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.8rem;
-      transition: var(--transition);
-      cursor: pointer;
-      position: relative;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .cart-toggle:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(26, 82, 118, 0.3);
-    }
-
-    .cart-count {
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-
-    /* ============================================ */
-    /* ===== HERO ===== */
-    /* ============================================ */
-    .hero {
-      position: relative;
-      padding: 100px 40px 120px;
-      background: linear-gradient(165deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
-      color: var(--text-white);
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -30%;
-      right: -10%;
-      width: 700px;
-      height: 700px;
-      background: radial-gradient(circle, rgba(230, 126, 34, 0.12) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: 0;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: -5%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, rgba(162, 161, 161, 0.06) 0%, transparent 70%);
-      border-radius: 50%;
-      z-index: 0;
-    }
-
-    .hero-inner {
-      position: relative;
-      z-index: 2;
-      max-width: 700px;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: rgba(255, 255, 255, 0.7);
-      background: rgba(255, 255, 255, 0.06);
-      padding: 6px 18px;
-      border-radius: 20px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      font-family: var(--font-ui);
-    }
-
-    .hero h1 {
-      font-family: var(--font-title);
-      font-size: clamp(3.5rem, 8vw, 5.5rem);
-      font-weight: 400;
-      line-height: 1.05;
-      margin-bottom: 18px;
-      letter-spacing: 0.04em;
-    }
-
-    .hero h1 em {
-      font-style: normal;
-      color: var(--secondary);
-    }
-
-    .hero p {
-      font-size: 1.1rem;
-      font-weight: 300;
-      opacity: 0.85;
-      max-width: 500px;
-      line-height: 1.7;
-      margin-bottom: 36px;
-      font-family: var(--font-ui);
-      letter-spacing: 0.02em;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--secondary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      padding: 16px 32px;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.9rem;
-      text-decoration: none;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: pointer;
-    }
-
-    .hero-cta:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(230, 126, 34, 0.4);
-    }
-
-    /* ============================================ */
-    /* ===== MENU SECTION → PRODUCTOS ===== */
-    /* ============================================ */
-    .menu-section {
-      padding: 64px 40px 100px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .menu-heading {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-
-    .menu-heading h2 {
-      font-family: var(--font-title);
-      font-size: clamp(2.5rem, 4vw, 3.4rem);
-      font-weight: 400;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .menu-heading h2 span {
-      color: var(--primary);
-    }
-
-    .menu-heading .menu-meta {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-
-    .menu-heading .mono {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--gray-dark);
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    .cambiar-sede {
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--primary);
-      background: none;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: var(--font-ui);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .cambiar-sede:hover {
-      color: var(--secondary);
-    }
-
-    /* ============================================ */
-    /* ===== CATEGORÍAS DESTACADAS ===== */
-    /* ============================================ */
-    .categorias-destacadas {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
-    }
-
-    .cat-destacada {
-      background: var(--surface);
-      border: 2px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 20px 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      font-family: var(--font-ui);
-    }
-
-    .cat-destacada:hover {
-      border-color: var(--primary);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .cat-destacada .cat-icon {
-      font-size: 2rem;
-      display: block;
-      margin-bottom: 6px;
-    }
-
-    .cat-destacada .cat-nombre {
-      font-weight: 700;
-      font-size: 0.8rem;
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .cat-destacada .cat-desc {
-      font-size: 0.7rem;
-      color: var(--gray-dark);
-      margin-top: 2px;
-    }
-
-    .cat-destacada.active {
-      border-color: var(--primary);
-      background: var(--accent-light);
-    }
-
-    /* ============================================ */
-    /* ===== FILTERS ===== */
-    /* ============================================ */
-    .filters {
-      display: none;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 36px;
-      padding-bottom: 4px;
-    }
-
-    .filter-btn {
-      padding: 10px 24px;
-      border: 2px solid var(--border);
-      background: transparent;
-      border-radius: 24px;
-      font-family: var(--font-ui);
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--gray-dark);
-      cursor: pointer;
-      transition: var(--transition);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .filter-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: var(--text-white);
-    }
-
-    /* ============================================ */
-    /* ===== GRID ===== */
-    /* ============================================ */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 28px;
-    }
-
-    /* ============================================ */
-    /* ===== CARD ===== */
-    /* ============================================ */
-    .card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: var(--transition);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--primary);
-    }
-
-    .card-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-      background: var(--bg);
-    }
-
-    .card-top {
-      padding: 24px 24px 16px;
-      position: relative;
-    }
-
-    .card[data-cat="camisetas"] .card-top {
-      background: linear-gradient(135deg, #E8F0FE 0%, #D6E4F8 100%);
-    }
-    .card[data-cat="uniformes"] .card-top {
-      background: linear-gradient(135deg, #E8F8F0 0%, #D6F0E8 100%);
-    }
-    .card[data-cat="insumos"] .card-top {
-      background: linear-gradient(135deg, #FFF0E8 0%, #F8E4D6 100%);
-    }
-    .card[data-cat="eventos"] .card-top {
-      background: linear-gradient(135deg, #F8E8F0 0%, #F0D6E4 100%);
-    }
-
-    .card-cat {
-      font-size: 0.55rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--gray-dark);
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 2px 14px;
-      border-radius: 12px;
-      font-family: var(--font-ui);
-    }
-
-    .card-top h3 {
-      font-family: var(--font-title);
-      font-size: 1.6rem;
-      font-weight: 400;
-      margin-top: 6px;
-      color: var(--text);
-      letter-spacing: 0.04em;
-    }
-
-    .card-desc {
-      font-size: 0.8rem;
-      color: var(--gray-dark);
-      margin-top: 2px;
-      line-height: 1.5;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    /* ===== DETALLES DEL PRODUCTO ===== */
-    .nutrition {
-      padding: 16px 24px 14px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .nutrition-title {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--gray-dark);
-      margin-bottom: 8px;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 6px;
-    }
-
-    .nutrition-item {
-      text-align: center;
-      padding: 6px 4px;
-      background: var(--surface);
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      transition: var(--transition);
-    }
-
-    .card:hover .nutrition-item {
-      border-color: var(--primary);
-    }
-
-    .nutrition-item .label {
-      font-size: 0.5rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--gray-dark);
-      display: block;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-item .value {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text);
-      display: block;
-      font-family: var(--font-ui);
-    }
-
-    .nutrition-item .unit {
-      font-size: 0.5rem;
-      font-weight: 400;
-      color: var(--gray);
-      font-family: var(--font-ui);
-    }
-
-    /* ===== DESCRIPCIÓN ESPECIAL ===== */
-    .card-desc-especial {
-      font-size: 0.8rem;
-      color: var(--gray-dark);
-      margin-top: 6px;
-      line-height: 1.6;
-      font-weight: 400;
-      font-family: var(--font-ui);
-      background: rgba(255, 255, 255, 0.5);
-      padding: 12px 14px;
-      border-radius: 10px;
-      border-left: 3px solid var(--secondary);
-    }
-
-    .card-desc-especial strong {
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .card-desc-especial .emoji-badge {
-      display: inline-block;
-      margin-right: 6px;
-    }
-
-    .card-footer {
-      padding: 14px 24px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: auto;
-      background: var(--surface);
-    }
-
-    .price {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text);
-      font-family: var(--font-ui);
-      letter-spacing: -0.02em;
-    }
-
-    .add-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 22px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.75rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .add-btn:hover {
-      background: var(--secondary);
-      transform: scale(1.03);
-      box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
-    }
-
-    /* ============================================ */
-    /* ===== CART DRAWER ===== */
-    /* ============================================ */
-    .cart-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-      z-index: 48;
-    }
-    .cart-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .cart-drawer {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100%;
-      width: min(440px, 92vw);
-      background: var(--surface);
-      box-shadow: -8px 0 60px rgba(0, 0, 0, 0.08);
-      z-index: 49;
-      transform: translateX(100%);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      display: flex;
-      flex-direction: column;
-    }
-    .cart-drawer.open {
-      transform: translateX(0);
-    }
-
-    .cart-head {
-      padding: 24px 28px 18px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .cart-head h3 {
-      font-family: var(--font-title);
-      font-size: 1.8rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-    }
-
-    .cart-head h3 span {
-      color: var(--primary);
-    }
-
-    .cart-close {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      color: var(--gray-dark);
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: var(--transition);
-      font-family: var(--font-ui);
-    }
-
-    .cart-close:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .cart-items {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 28px;
-    }
-
-    .cart-empty {
-      text-align: center;
-      color: var(--gray-dark);
-      font-size: 0.9rem;
-      padding: 40px 0;
-      font-family: var(--font-ui);
-      font-weight: 400;
-    }
-
-    .cart-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      gap: 12px;
-    }
-
-    .cart-item-info {
-      flex: 1;
-    }
-
-    .cart-item-name {
-      font-family: var(--font-title);
-      font-size: 1.1rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-    }
-
-    .cart-item-meta {
-      font-size: 0.7rem;
-      color: var(--gray-dark);
-      margin-top: 2px;
-      font-weight: 400;
-      font-family: var(--font-ui);
-    }
-
-    .qty-controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .qty-controls button {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-ui);
-    }
-
-    .qty-controls button:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    .qty-controls span {
-      font-weight: 700;
-      min-width: 28px;
-      text-align: center;
-      font-family: var(--font-ui);
-    }
-
-    .order-options {
-      padding: 18px 28px;
-      border-top: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .order-options label {
-      display: block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--gray-dark);
-      margin-bottom: 4px;
-      font-family: var(--font-ui);
-    }
-
-    .order-options select,
-    .order-options input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface);
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      color: var(--text);
-      transition: var(--transition);
-      margin-bottom: 8px;
-      font-weight: 400;
-    }
-
-    .order-options select:focus,
-    .order-options input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .order-options input {
-      margin-bottom: 0;
-    }
-
-    .order-options input:last-child {
-      margin-bottom: 0;
-    }
-
-    .cart-summary {
-      padding: 18px 28px 24px;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      padding: 4px 0;
-      color: var(--gray-dark);
-      font-family: var(--font-ui);
-      font-weight: 400;
-    }
-
-    .summary-row.total {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text);
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
-      margin-top: 4px;
-    }
-
-    .confirm-btn {
-      width: 100%;
-      margin-top: 16px;
-      padding: 16px;
-      background: var(--primary);
-      color: var(--text-white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .confirm-btn:hover:not(:disabled) {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(230, 126, 34, 0.3);
-    }
-
-    .confirm-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* ============================================ */
-    /* ===== CHECKOUT MODAL ===== */
-    /* ============================================ */
-    .checkout-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      z-index: 60;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .checkout-modal.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .checkout-content {
-      background: var(--surface);
-      border-radius: var(--radius);
-      max-width: 520px;
-      width: 100%;
-      padding: 44px 36px 36px;
-      box-shadow: var(--shadow-hover);
-      transform: scale(0.95);
-      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .checkout-modal.open .checkout-content {
-      transform: scale(1);
-    }
-
-    .checkout-content h2 {
-      font-family: var(--font-title);
-      font-size: 2.2rem;
-      font-weight: 400;
-      margin-bottom: 4px;
-      letter-spacing: 0.04em;
-    }
-
-    .checkout-content h2 span {
-      color: var(--primary);
-    }
-
-    .checkout-content .checkout-sub {
-      color: var(--gray-dark);
-      font-size: 0.85rem;
-      margin-bottom: 24px;
-      font-family: var(--font-ui);
-    }
-
-    .checkout-content label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.8rem;
-      margin-bottom: 4px;
-      font-family: var(--font-ui);
-      color: var(--text);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .checkout-content input,
-    .checkout-content textarea,
-    .checkout-content select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-      transition: var(--transition);
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .checkout-content input:focus,
-    .checkout-content textarea:focus,
-    .checkout-content select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .checkout-content textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .checkout-content .campo-condicional {
-      display: none;
-    }
-    .checkout-content .campo-condicional.visible {
-      display: block;
-    }
-
-    .checkout-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .checkout-actions button {
-      flex: 1;
-      padding: 14px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: var(--transition);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .checkout-actions .btn-cancel {
-      background: var(--bg);
-      color: var(--gray-dark);
-      border: 1px solid var(--border);
-    }
-
-    .checkout-actions .btn-cancel:hover {
-      background: var(--border);
-    }
-
-    .checkout-actions .btn-submit {
-      background: var(--primary);
-      color: var(--text-white);
-    }
-
-    .checkout-actions .btn-submit:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(230, 126, 34, 0.3);
-    }
-
-    /* ============================================ */
-    /* ===== TOAST ===== */
-    /* ============================================ */
-    .toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
-      transform: translate(-50%, 20px);
-      background: var(--text);
-      color: var(--text-white);
-      padding: 16px 32px;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 0.85rem;
-      font-weight: 500;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.4s ease;
-      z-index: 70;
-      box-shadow: var(--shadow-hover);
-      letter-spacing: 0.02em;
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    /* ============================================ */
-    /* ===== FOOTER ===== */
-    /* ============================================ */
-    footer {
-      background: var(--primary-dark);
-      color: var(--text-white);
-      padding: 56px 40px;
-      text-align: center;
-      border-top: 3px solid var(--secondary);
-    }
-
-    footer .brand {
-      font-family: var(--font-title);
-      font-size: 2.4rem;
-      font-weight: 400;
-      color: rgba(255,255,255,0.3);
-      margin-bottom: 8px;
-      letter-spacing: 0.04em;
-    }
-
-    footer .brand span {
-      color: var(--text-white);
-    }
-
-    footer p {
-      font-size: 0.8rem;
-      font-weight: 300;
-      opacity: 0.7;
-      letter-spacing: 0.04em;
-      font-family: var(--font-ui);
-    }
-
-    /* ============================================ */
-    /* ===== EASTER EGG - MEMORY GAME ===== */
-    /* ============================================ */
-    .egg-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(26, 82, 118, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      z-index: 999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .egg-overlay.open {
-      display: flex;
-    }
-
-    .egg-modal {
-      max-width: 650px;
-      width: 100%;
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 40px 32px 32px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .egg-modal .egg-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .egg-modal .egg-header h2 {
-      font-family: var(--font-title);
-      font-size: 2rem;
-      font-weight: 400;
-      color: var(--primary);
-      letter-spacing: 0.04em;
-    }
-
-    .egg-modal .egg-header h2 span {
-      color: var(--secondary);
-    }
-
-    .egg-close {
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      color: var(--gray-dark);
-      cursor: pointer;
-      transition: var(--transition);
-      padding: 0 8px;
-      font-family: var(--font-ui);
-    }
-    .egg-close:hover {
-      color: var(--primary);
-      transform: rotate(90deg);
-    }
-
-    .egg-subtitle {
-      font-size: 0.85rem;
-      color: var(--gray-dark);
-      margin-bottom: 20px;
-      font-family: var(--font-ui);
-    }
-
-    .egg-stats {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--gray-dark);
-      font-family: var(--font-ui);
-    }
-
-    .egg-stats span {
-      background: var(--bg);
-      padding: 6px 16px;
-      border-radius: 12px;
-    }
-
-    .egg-stats .egg-moves span {
-      background: var(--primary);
-      color: white;
-    }
-
-    .memory-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .memory-card {
-      aspect-ratio: 1;
-      background: var(--primary);
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
-      cursor: pointer;
-      transition: var(--transition);
-      border: 2px solid var(--primary);
-      user-select: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .memory-card:hover:not(.matched):not(.flipped) {
-      transform: scale(1.05);
-      border-color: var(--secondary);
-    }
-
-    .memory-card.flipped {
-      background: var(--bg);
-      border-color: var(--secondary);
-      transform: scale(0.98);
-    }
-
-    .memory-card.matched {
-      background: var(--bg);
-      border-color: #4CAF50;
-      cursor: default;
-      opacity: 0.7;
-      transform: scale(0.95);
-    }
-
-    .memory-card .card-content {
-      display: none;
-    }
-    .memory-card.flipped .card-content,
-    .memory-card.matched .card-content {
-      display: block;
-    }
-
-    .memory-card .card-back {
-      display: block;
-      font-size: 1.8rem;
-      color: white;
-    }
-    .memory-card.flipped .card-back,
-    .memory-card.matched .card-back {
-      display: none;
-    }
-
-    .egg-message {
-      text-align: center;
-      padding: 16px;
-      background: var(--accent-light);
-      border-radius: var(--radius-sm);
-      border: 2px solid var(--secondary);
-      margin-top: 8px;
-      font-family: var(--font-ui);
-      font-weight: 600;
-      color: var(--primary);
-      font-size: 0.95rem;
-      display: none;
-    }
-    .egg-message.show {
-      display: block;
-      animation: pulse 1s ease infinite alternate;
-    }
-
-    @keyframes pulse {
-      from { transform: scale(1); }
-      to { transform: scale(1.02); }
-    }
-
-    .egg-reset-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: var(--transition);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 12px;
-    }
-    .egg-reset-btn:hover {
-      background: var(--secondary);
-    }
-
-    /* ============================================ */
-    /* ===== RESPONSIVE ===== */
-    /* ============================================ */
-    @media (max-width: 768px) {
-      .site-header {
-        padding: 12px 16px;
-      }
-      .hero {
-        padding: 80px 20px 100px;
-      }
-      .menu-section {
-        padding: 40px 16px 80px;
-      }
-      .grid {
-        grid-template-columns: 1fr;
-      }
-      .sede-modal {
-        padding: 32px 20px 28px;
-      }
-      .sedes-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-      .sede-card-image {
-        height: 120px;
-      }
-      .header-actions .sede-indicator {
-        display: none !important;
-      }
-      .card-image {
-        height: 180px;
-      }
-      .checkout-content {
-        padding: 28px 20px 24px;
-      }
-      .nutrition-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .hero h1 {
-        font-size: 3rem;
-      }
-      .sede-modal h2 {
-        font-size: 2.2rem;
-      }
-      .memory-grid {
-        gap: 8px;
-      }
-      .memory-card {
-        font-size: 1.6rem;
-      }
-      .egg-modal {
-        padding: 24px 16px;
-      }
-      .egg-modal .egg-header h2 {
-        font-size: 1.5rem;
-      }
-      .categorias-destacadas {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .logo-text {
-        font-size: 1.2rem;
-      }
-      .logo-sub {
-        font-size: 0.5rem;
-      }
-      .cart-toggle {
-        padding: 8px 14px;
-        font-size: 0.7rem;
-      }
-      .hero h1 {
-        font-size: 2.4rem;
-      }
-      .card-image {
-        height: 160px;
-      }
-      .sede-card-image {
-        height: 100px;
-      }
-      .sede-modal h2 {
-        font-size: 1.8rem;
-      }
-      .checkout-actions {
-        flex-direction: column;
-      }
-      .nutrition-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      .filters {
-        gap: 6px;
-      }
-      .filter-btn {
-        padding: 6px 14px;
-        font-size: 0.6rem;
-      }
-      .card-top h3 {
-        font-size: 1.3rem;
-      }
-      .cart-head h3 {
-        font-size: 1.4rem;
-      }
-      footer .brand {
-        font-size: 1.8rem;
-      }
-      .memory-grid {
-        gap: 6px;
-      }
-      .memory-card {
-        font-size: 1.2rem;
-        border-radius: 8px;
-      }
-      .egg-stats {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .categorias-destacadas {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-      .cat-destacada {
-        padding: 14px 10px;
-      }
-      .cat-destacada .cat-icon {
-        font-size: 1.5rem;
-      }
-      .sedes-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTELLIGENT NUTRITION · Manual de Procedimientos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3F0; --surface:#FFFFFF; --text:#000000; --text-light:#535252; --text-white:#FFFFFF;
+    --primary:#660000; --primary-dark:#4A0000; --primary-light:#8A0000; --secondary:#D20A11;
+    --gray:#A2A1A1; --gray-dark:#535252;
+    --accent-glow:rgba(210,10,17,0.12); --border:#E8E3DE;
+    --shadow:0 8px 40px rgba(0,0,0,0.05); --shadow-hover:0 16px 60px rgba(102,0,0,0.15);
+    --radius:20px; --radius-sm:12px; --transition:all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+    --font-title:'Bebas Neue','Impact',sans-serif; --font-ui:'Inter','Helvetica Neue',sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--font-ui);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;font-weight:400;}
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--secondary);}
+
+  /* HEADER */
+  .site-header{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(255,255,255,0.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(232,227,222,0.5);}
+  .logo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+  .logo-image{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--primary);}
+  .logo-text{font-family:var(--font-title);font-size:1.6rem;font-weight:400;color:var(--text);letter-spacing:0.04em;}
+  .logo-text span{color:var(--primary);}
+  .logo-sub{display:block;font-family:var(--font-ui);font-size:0.55rem;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:var(--gray-dark);margin-top:-2px;}
+  .header-tag{font-size:0.7rem;font-weight:600;color:var(--text-white);background:var(--primary);padding:8px 18px;border-radius:20px;letter-spacing:0.06em;font-family:var(--font-ui);}
+
+  /* HERO */
+  .hero{position:relative;padding:100px 40px 110px;background:linear-gradient(165deg,var(--primary-dark) 0%,var(--primary) 50%,var(--primary) 100%);color:var(--text-white);overflow:hidden;isolation:isolate;}
+  .hero::before{content:'';position:absolute;top:-30%;right:-10%;width:700px;height:700px;background:radial-gradient(circle,rgba(210,10,17,0.12) 0%,transparent 70%);border-radius:50%;z-index:0;}
+  .hero::after{content:'';position:absolute;bottom:-20%;left:-5%;width:500px;height:500px;background:radial-gradient(circle,rgba(162,161,161,0.06) 0%,transparent 70%);border-radius:50%;z-index:0;}
+  .hero-inner{position:relative;z-index:2;max-width:720px;}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--gray);background:rgba(255,255,255,0.06);padding:6px 18px;border-radius:20px;margin-bottom:24px;border:1px solid rgba(255,255,255,0.06);}
+  .hero h1{font-family:var(--font-title);font-size:clamp(2.8rem,6.5vw,4.6rem);font-weight:400;line-height:1.08;margin-bottom:18px;letter-spacing:0.03em;}
+  .hero p{font-size:1.05rem;font-weight:300;opacity:0.85;max-width:540px;line-height:1.7;font-family:var(--font-ui);}
+  .hero-stats{display:flex;gap:28px;margin-top:34px;flex-wrap:wrap;}
+  .hero-stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:var(--radius-sm);padding:14px 22px;}
+  .hero-stat .num{font-family:var(--font-title);font-size:2rem;letter-spacing:0.03em;}
+  .hero-stat .lbl{font-size:0.65rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--gray);}
+
+  /* MENU / MANUAL SECTION */
+  .menu-section{padding:60px 40px 100px;max-width:1200px;margin:0 auto;}
+  .menu-heading h2{font-family:var(--font-title);font-size:clamp(2.2rem,4vw,3rem);font-weight:400;color:var(--text);letter-spacing:0.04em;margin-bottom:6px;}
+  .menu-heading h2 span{color:var(--primary);}
+  .menu-heading .sub{font-size:0.85rem;color:var(--gray-dark);margin-bottom:28px;max-width:600px;}
+
+  .search-bar{position:relative;max-width:420px;margin-bottom:24px;}
+  .search-bar svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--gray-dark);pointer-events:none;}
+  .search-bar input{width:100%;padding:13px 16px 13px 46px;border:2px solid var(--border);border-radius:24px;background:var(--surface);font-family:var(--font-ui);font-size:0.85rem;color:var(--text);transition:var(--transition);}
+  .search-bar input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px var(--accent-glow);}
+  .search-bar input::placeholder{color:var(--gray);}
+  .search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:26px;height:26px;border:none;background:var(--bg);color:var(--gray-dark);border-radius:50%;cursor:pointer;font-size:0.8rem;display:none;align-items:center;justify-content:center;transition:var(--transition);}
+  .search-clear:hover{background:var(--primary);color:var(--text-white);}
+  .search-clear.show{display:flex;}
+  .no-results{display:none;padding:40px 20px;text-align:center;color:var(--gray-dark);font-size:0.9rem;background:var(--surface);border:1px dashed var(--border);border-radius:var(--radius);}
+  .no-results.show{display:block;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px;padding-bottom:4px;}
+  .filter-btn{padding:10px 24px;border:2px solid var(--border);background:transparent;border-radius:24px;font-family:var(--font-ui);font-size:0.7rem;font-weight:700;color:var(--gray-dark);cursor:pointer;transition:var(--transition);text-transform:uppercase;letter-spacing:0.06em;}
+  .filter-btn:hover{border-color:var(--primary);color:var(--primary);}
+  .filter-btn.active{background:var(--primary);border-color:var(--primary);color:var(--text-white);}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px;}
+
+  .card{background:var(--surface);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);transition:var(--transition);display:flex;flex-direction:column;}
+  .card:hover{box-shadow:var(--shadow-hover);border-color:var(--primary);}
+
+  .card-top{padding:22px 24px 16px;position:relative;}
+  .card[data-cat="smoothies"] .card-top{background:linear-gradient(135deg,#FDF2F0 0%,#FBE9E6 100%);}
+  .card[data-cat="protein"] .card-top{background:linear-gradient(135deg,#FDF8F0 0%,#FBF0E0 100%);}
+  .card[data-cat="preentrenos"] .card-top{background:linear-gradient(135deg,#F2F5F0 0%,#E8EDE5 100%);}
+
+  .card-cat{font-size:0.55rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--gray-dark);display:inline-block;background:rgba(255,255,255,0.8);padding:2px 14px;border-radius:12px;}
+  .card-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-top:8px;}
+  .card-top h3{font-family:var(--font-title);font-size:1.5rem;font-weight:400;color:var(--text);letter-spacing:0.04em;line-height:1.1;}
+  .card-price{font-size:1.1rem;font-weight:700;color:var(--primary);white-space:nowrap;font-family:var(--font-ui);}
+  .card-price.pending{color:var(--gray-dark);font-size:0.75rem;font-weight:600;}
+
+  .card-body{padding:18px 24px 22px;border-top:1px solid var(--border);flex:1;display:flex;flex-direction:column;gap:16px;}
+
+  .block-title{font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--gray-dark);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+
+  .ingredients-list{list-style:none;display:flex;flex-wrap:wrap;gap:6px;}
+  .ingredients-list li{font-size:0.72rem;background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:5px 12px;color:var(--text);font-weight:500;}
+
+  .steps-list{list-style:none;counter-reset:step;display:flex;flex-direction:column;gap:9px;}
+  .steps-list li{counter-increment:step;position:relative;padding-left:30px;font-size:0.82rem;color:var(--text-light);line-height:1.5;}
+  .steps-list li::before{content:counter(step);position:absolute;left:0;top:0;width:20px;height:20px;background:var(--primary);color:var(--text-white);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;font-family:var(--font-ui);}
+
+  .note-box{background:rgba(210,10,17,0.06);border-left:3px solid var(--secondary);border-radius:10px;padding:10px 14px;font-size:0.75rem;color:var(--primary-dark);font-weight:600;}
+
+  footer{background:var(--primary-dark);color:var(--text-white);padding:56px 40px;text-align:center;border-top:3px solid var(--secondary);}
+  footer .brand{font-family:var(--font-title);font-size:2.2rem;font-weight:400;color:var(--gray);margin-bottom:8px;letter-spacing:0.04em;}
+  footer .brand span{color:var(--text-white);}
+  footer p{font-size:0.78rem;font-weight:300;opacity:0.7;letter-spacing:0.03em;}
+
+  @media (max-width:768px){
+    .site-header{padding:12px 16px;}
+    .hero{padding:70px 20px 90px;}
+    .menu-section{padding:40px 16px 80px;}
+    .grid{grid-template-columns:1fr;}
+    .header-tag{display:none;}
+  }
+</style>
 </head>
 <body>
 
-<!-- ============================================ -->
-<!-- ===== CATEGORÍAS OVERLAY ===== -->
-<!-- ============================================ -->
-<div class="sede-overlay hidden" id="sedeOverlay">
-  <div class="sede-modal">
-    <img class="logo-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-YCt7EYTNBdULEoTP2SoK5d9F4-0P1bHmjLAnWSfN8Q&s" alt="CustomWear Logo">
-    <h2>CUSTOM<span>WEAR</span></h2>
-    <p class="subtitle">Elige la categoría de producto</p>
-    <div class="sedes-grid" id="sedesGrid"></div>
-    <button class="sede-btn" id="sedeBtn" disabled>VER PRODUCTOS →</button>
-  </div>
-</div>
-
-<!-- ============================================ -->
-<!-- ===== EASTER EGG - MEMORY GAME ===== -->
-<!-- ============================================ -->
-<div class="egg-overlay" id="eggOverlay">
-  <div class="egg-modal">
-    <div class="egg-header">
-      <h2>👕 <span>Custom</span> Secreto</h2>
-      <button class="egg-close" id="eggClose">✕</button>
-    </div>
-    <p class="egg-subtitle">¡Encuentra todas las parejas! 🧠💪</p>
-    <div class="egg-stats">
-      <span class="egg-moves">🔄 Movimientos: <span id="eggMoves">0</span></span>
-      <span>⏱️ Tiempo: <span id="eggTime">0</span>s</span>
-      <span>🎯 Parejas: <span id="eggPairs">0</span>/8</span>
-    </div>
-    <div class="memory-grid" id="memoryGrid"></div>
-    <div class="egg-message" id="eggMessage">
-      🎉 ¡Felicidades! Has encontrado todas las parejas. <br>
-      🏆 Disfruta de un <strong>15% de descuento</strong> en tu primer pedido.
-    </div>
-    <button class="egg-reset-btn" id="eggReset">🔄 Reiniciar juego</button>
-  </div>
-</div>
-
-<!-- ============================================ -->
-<!-- ===== CONTENIDO PRINCIPAL ===== -->
-<!-- ============================================ -->
-<div class="site-content visible" id="siteContent">
-
 <header class="site-header">
   <a href="#" class="logo">
-    <img class="logo-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-YCt7EYTNBdULEoTP2SoK5d9F4-0P1bHmjLAnWSfN8Q&s" alt="CustomWear Logo">
+    <img class="logo-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-YCt7EYTNBdULEoTP2SoK5d9F4-0P1bHmjLAnWSfN8Q&s" alt="INTELLIGENT NUTRITION Logo">
     <div>
-      <span class="logo-text">CUSTOM<span>WEAR</span></span>
-      <span class="logo-sub">Insumos · Uniformes · Eventos</span>
+      <span class="logo-text">INTELLIGENT <span>NUTRITION</span></span>
+      <span class="logo-sub">Manual de Procedimientos</span>
     </div>
   </a>
-  <div class="header-actions">
-    <span class="sede-indicator" id="sedeIndicator">📍 Todos los productos</span>
-    <button class="cart-toggle" id="cartToggle" aria-haspopup="true" aria-expanded="false">
-      Cotización
-      <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
+  <span class="header-tag">Uso interno · Staff</span>
 </header>
 
 <section class="hero">
   <div class="hero-inner">
-    <span class="hero-badge">✦ Personalización · Calidad · Eventos</span>
-    <h1>Tu marca <em>puesta</em> en acción.</h1>
-    <p>Camisetas, uniformes, insumos personalizados y activaciones para eventos. Calidad y diseño que hablan por sí solos.</p>
-    <button class="hero-cta" id="abrirCategoriasBtn">
-      Explorar categorías
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </button>
+    <span class="hero-badge">✦ Manual de procedimientos · Septiembre 2026</span>
+    <h1>La receta exacta, cada vez.</h1>
+    <p>Ingredientes, cantidades y el paso a paso oficial para preparar cada smoothie, batido de proteína y preentreno. Sigue el orden tal como está escrito para mantener el mismo sabor y presentación en todas las sedes.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">8</div><div class="lbl">Smoothies</div></div>
+      <div class="hero-stat"><div class="num">2</div><div class="lbl">Batidos proteína</div></div>
+      <div class="hero-stat"><div class="num">5</div><div class="lbl">Preentrenos</div></div>
+    </div>
   </div>
 </section>
 
-<section class="menu-section" id="productos">
+<section class="menu-section" id="menu">
   <div class="menu-heading">
-    <h2>Nuestros <span>productos</span></h2>
-    <div class="menu-meta">
-      <span class="mono" id="sedeMenuIndicator">📍 Todos los productos</span>
-      <button class="cambiar-sede" id="cambiarSedeBtn">Filtrar por categoría</button>
-    </div>
+    <h2>Fichas de <span>preparación</span></h2>
+    <p class="sub">Cada ficha incluye ingredientes, procedimiento numerado y notas importantes (cobros adicionales, preguntas al cliente, decoración). El precio corresponde al valor de venta al público.</p>
   </div>
 
-  <!-- ===== CATEGORÍAS DESTACADAS ===== -->
-  <div class="categorias-destacadas" id="categoriasDestacadas">
-    <div class="cat-destacada active" data-cat="todos">
-      <span class="cat-icon">🌟</span>
-      <div class="cat-nombre">Todos</div>
-      <div class="cat-desc">Ver todos los productos</div>
-    </div>
-    <div class="cat-destacada" data-cat="camisetas">
-      <span class="cat-icon">👕</span>
-      <div class="cat-nombre">Camisetas</div>
-      <div class="cat-desc">Personalizadas y deportivas</div>
-    </div>
-    <div class="cat-destacada" data-cat="uniformes">
-      <span class="cat-icon">👔</span>
-      <div class="cat-nombre">Uniformes</div>
-      <div class="cat-desc">Corporativos y escolares</div>
-    </div>
-    <div class="cat-destacada" data-cat="insumos">
-      <span class="cat-icon">🛍️</span>
-      <div class="cat-nombre">Insumos</div>
-      <div class="cat-desc">Gorras, tazas, bolsos</div>
-    </div>
-    <div class="cat-destacada" data-cat="eventos">
-      <span class="cat-icon">🎪</span>
-      <div class="cat-nombre">Eventos</div>
-      <div class="cat-desc">Activaciones y mercancía</div>
-    </div>
+  <div class="search-bar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Buscar receta o ingrediente…" autocomplete="off">
+    <button class="search-clear" id="searchClear" aria-label="Limpiar búsqueda">✕</button>
   </div>
 
-  <div class="filters" role="tablist" id="filtersContainer">
+  <div class="filters" role="tablist">
     <button class="filter-btn active" data-filter="todos">Todos</button>
-    <button class="filter-btn" data-filter="camisetas">Camisetas</button>
-    <button class="filter-btn" data-filter="uniformes">Uniformes</button>
-    <button class="filter-btn" data-filter="insumos">Insumos</button>
-    <button class="filter-btn" data-filter="eventos">Eventos</button>
+    <button class="filter-btn" data-filter="smoothies">Smoothies</button>
+    <button class="filter-btn" data-filter="protein">Batidos de Proteína</button>
+    <button class="filter-btn" data-filter="preentrenos">Preentrenos</button>
   </div>
 
   <div class="grid" id="grid"></div>
+  <div class="no-results" id="noResults">No se encontraron recetas que coincidan con tu búsqueda.</div>
 </section>
 
 <footer>
-  <div class="brand">CUSTOM <span>WEAR</span></div>
-  <p id="footerInfo">Cra 12 #34-56 · Bogotá · ventas@customwear.co · @customwear</p>
+  <div class="brand">INTELLIGENT <span>NUTRITION</span></div>
+  <p>Manual de procedimientos interno · Septiembre 2026 · Solo para uso del personal</p>
 </footer>
 
-</div>
-
-<!-- ============================================ -->
-<!-- ===== CARRITO DE COTIZACIONES ===== -->
-<!-- ============================================ -->
-<div class="cart-overlay" id="cartOverlay"></div>
-<aside class="cart-drawer" id="cartDrawer">
-  <div class="cart-head">
-    <h3>Tu <span>cotización</span></h3>
-    <button class="cart-close" id="cartClose">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems">
-    <p class="cart-empty">Aún no has seleccionado productos. Explora nuestro catálogo 👀</p>
-  </div>
-  <div class="order-options">
-    <label for="tipoPedido">Tipo de cliente</label>
-    <select id="tipoPedido">
-      <option value="Empresa">🏢 Empresa</option>
-      <option value="Particular">👤 Particular</option>
-      <option value="Organización">🏛️ Organización / Evento</option>
-    </select>
-    <input type="text" id="direccion" placeholder="📌 Cantidad estimada / Referencia" style="display:block;">
-  </div>
-  <div class="cart-summary">
-    <div class="summary-row total"><span>Total estimado</span><span id="sumPrice">$0</span></div>
-    <button class="confirm-btn" id="confirmBtn" disabled>Solicitar cotización</button>
-  </div>
-</aside>
-
-<!-- ============================================ -->
-<!-- ===== CHECKOUT MODAL ===== -->
-<!-- ============================================ -->
-<div class="checkout-modal" id="checkoutModal">
-  <div class="checkout-content">
-    <h2>📋 Solicitar <span>cotización</span></h2>
-    <p class="checkout-sub">Completa tus datos para recibir una cotización personalizada</p>
-    <label for="nombreCliente">👤 Nombre completo</label>
-    <input type="text" id="nombreCliente" placeholder="Ej: Carlos Rodríguez" required>
-    <label for="emailCliente">📧 Correo electrónico</label>
-    <input type="email" id="emailCliente" placeholder="Ej: carlos@email.com" required>
-    <label for="telefonoCliente">📱 Teléfono</label>
-    <input type="tel" id="telefonoCliente" placeholder="Ej: 3001234567" required>
-    <div id="camposDomicilio" class="campo-condicional visible">
-      <label for="direccionCliente">📍 Detalles del pedido</label>
-      <input type="text" id="direccionCliente" placeholder="Cantidad, tallas, colores, personalización...">
-      <label for="metodoPago">💰 Presupuesto estimado</label>
-      <select id="metodoPago">
-        <option value="0-500k">Menos de $500.000</option>
-        <option value="500k-2M">$500.000 - $2.000.000</option>
-        <option value="2M-5M">$2.000.000 - $5.000.000</option>
-        <option value="5M+">Más de $5.000.000</option>
-      </select>
-    </div>
-    <label for="observacionesCliente">💬 Mensaje adicional</label>
-    <textarea id="observacionesCliente" placeholder="Cuéntanos más sobre tu proyecto, fechas de entrega, personalizaciones especiales, etc."></textarea>
-    <div class="checkout-actions">
-      <button class="btn-cancel" id="checkoutCancel">Cancelar</button>
-      <button class="btn-submit" id="checkoutSubmit">📩 Enviar solicitud</button>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
 <script>
-  // ============================================
-  // ===== DATOS =====
-  // ============================================
-  const SEDES = {
-    'Camisetas': {
-      direccion: 'Personalizadas · Deportivas · Algodón Premium',
-      horario: 'Entrega: 5-10 días hábiles',
-      telefono: '573001234567',
-      imagen: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=600&h=400&fit=crop&crop=center',
-      emoji: '👕'
-    },
-    'Uniformes': {
-      direccion: 'Corporativos · Escolares · Trabajo',
-      horario: 'Entrega: 7-14 días hábiles',
-      telefono: '573001234568',
-      imagen: 'https://images.unsplash.com/photo-1584735935682-2f2b69d1d3e1?w=600&h=400&fit=crop&crop=center',
-      emoji: '👔'
-    },
-    'Insumos': {
-      direccion: 'Gorras · Tazas · Bolsos · Merchandising',
-      horario: 'Entrega: 3-7 días hábiles',
-      telefono: '573001234569',
-      imagen: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&h=400&fit=crop&crop=center',
-      emoji: '🛍️'
-    },
-    'Eventos': {
-      direccion: 'Activaciones · Mercancía · Kits promocionales',
-      horario: 'Cotización personalizada',
-      telefono: '573001234570',
-      imagen: 'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=600&h=400&fit=crop&crop=center',
-      emoji: '🎪'
-    }
-  };
+const CAT_LABEL = {smoothies:'Smoothie', protein:'Proteína', preentrenos:'Preentreno'};
 
-  const ITEMS = [
-    // ---------- CAMISETAS ----------
-    {
-      id:'c1', cat:'camisetas', name:'Camiseta Algodón Premium',
-      desc:'Camiseta 100% algodón peinado, ideal para estampado y bordado.',
-      descEspecial: '✨ <strong>Calidad superior.</strong> Gramaje 180g/m², cuello redondo, costuras reforzadas. Disponible en 10 colores y tallas XS a XXL.',
-      cal:0, prot:0, carb:0, fat:0, price:45000,
-      img:'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'c2', cat:'camisetas', name:'Camiseta Deportiva Dry-Fit',
-      desc:'Tecnología Dry-Fit que absorbe el sudor, ideal para deporte y actividades al aire libre.',
-      descEspecial: '🏃 <strong>Rendimiento y comodidad.</strong> Tejido transpirable, secado rápido, protección UV. Perfecta para equipos deportivos.',
-      cal:0, prot:0, carb:0, fat:0, price:55000,
-      img:'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'c3', cat:'camisetas', name:'Camiseta Estampado Digital',
-      desc:'Estampado digital de alta calidad en camiseta 100% algodón.',
-      descEspecial: '🖨️ <strong>Diseño sin límites.</strong> Estampado full color, resistente al lavado, ideal para promociones y eventos.',
-      cal:0, prot:0, carb:0, fat:0, price:52000,
-      img:'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // ---------- UNIFORMES ----------
-    {
-      id:'u1', cat:'uniformes', name:'Uniforme Corporativo',
-      desc:'Set completo de uniforme con camisa, pantalón y chaqueta.',
-      descEspecial: '💼 <strong>Imagen profesional.</strong> Incluye: camisa ejecutiva, pantalón sastre y chaqueta. Bordado con logo incluido.',
-      cal:0, prot:0, carb:0, fat:0, price:320000,
-      img:'https://images.unsplash.com/photo-1584735935682-2f2b69d1d3e1?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'u2', cat:'uniformes', name:'Uniforme Escolar',
-      desc:'Uniforme completo para colegios con diseño personalizado.',
-      descEspecial: '📚 <strong>Identidad escolar.</strong> Incluye: camisa/ blusa, pantalón/ falda, chaqueta y chaleco. Tallas desde 4 a 16 años.',
-      cal:0, prot:0, carb:0, fat:0, price:180000,
-      img:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'u3', cat:'uniformes', name:'Uniforme de Trabajo Industrial',
-      desc:'Uniformes resistentes con materiales de alta durabilidad.',
-      descEspecial: '🛡️ <strong>Seguridad y resistencia.</strong> Tela anti-desgarre, reflejante, bolsillos funcionales. Ideal para construcción y logística.',
-      cal:0, prot:0, carb:0, fat:0, price:280000,
-      img:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // ---------- INSUMOS ----------
-    {
-      id:'i1', cat:'insumos', name:'Gorras Personalizadas',
-      desc:'Gorras 100% algodón con bordado personalizado.',
-      descEspecial: '🧢 <strong>Estilo y promoción.</strong> 6 paneles, ajuste trasero, bordado de 3 colores máximo. Ideal para merchandising.',
-      cal:0, prot:0, carb:0, fat:0, price:28000,
-      img:'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'i2', cat:'insumos', name:'Tazas Personalizadas',
-      desc:'Tazas de cerámica con impresión de alta calidad.',
-      descEspecial: '☕ <strong>El detalle perfecto.</strong> Capacidad 350ml, impresión full color, resistente al lavavajillas. Personaliza con tu logo o diseño.',
-      cal:0, prot:0, carb:0, fat:0, price:18000,
-      img:'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'i3', cat:'insumos', name:'Bolso Ecológico',
-      desc:'Bolso de tela ecológica con estampado personalizado.',
-      descEspecial: '🌱 <strong>Sostenible y práctico.</strong> Tela 100% algodón orgánico, estampado full color. Ideal para regalos y promociones.',
-      cal:0, prot:0, carb:0, fat:0, price:35000,
-      img:'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=300&fit=crop&crop=center'
-    },
-
-    // ---------- EVENTOS ----------
-    {
-      id:'e1', cat:'eventos', name:'Kit Promocional para Eventos',
-      desc:'Kit completo con camiseta, gorra, bolso y accesorios personalizados.',
-      descEspecial: '🎉 <strong>¡Impacta en tu evento!</strong> Incluye: 1 camiseta, 1 gorra, 1 bolso ecológico, 1 taza. Todo personalizado con tu marca.',
-      cal:0, prot:0, carb:0, fat:0, price:185000,
-      img:'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'e2', cat:'eventos', name:'Activación de Marca',
-      desc:'Experiencia completa con productos personalizados para activación.',
-      descEspecial: '🎯 <strong>Conecta con tu audiencia.</strong> Incluye: 50 camisetas, 50 gorras, 50 bolsos, carpa promocional y 2 staff. Personalización completa.',
-      cal:0, prot:0, carb:0, fat:0, price:3250000,
-      img:'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=400&h=300&fit=crop&crop=center'
-    },
-    {
-      id:'e3', cat:'eventos', name:'Merchandising Corporativo',
-      desc:'Set de productos promocionales para empresas y eventos.',
-      descEspecial: '📦 <strong>Tu marca en cada detalle.</strong> Incluye: 20 camisetas, 20 gorras, 20 tazas, 20 bolsos y 20 llaveros. Personalización completa.',
-      cal:0, prot:0, carb:0, fat:0, price:850000,
-      img:'https://images.unsplash.com/photo-1511578314322-379afb476865?w=400&h=300&fit=crop&crop=center'
-    }
-  ];
-
-  const CAT_LABEL = {camisetas:'Camisetas', uniformes:'Uniformes', insumos:'Insumos', eventos:'Eventos'};
-  const NO_NUTRITION_CATS = ['camisetas', 'uniformes', 'insumos', 'eventos'];
-
-  // ============================================
-  // ===== ESTADO GLOBAL =====
-  // ============================================
-  let sedeSeleccionada = null;
-  let sedeTemporal = null;
-  const cart = {};
-  let filtroActual = 'todos';
-
-  // ============================================
-  // ===== REFERENCIAS DOM =====
-  // ============================================
-  const sedeOverlay = document.getElementById('sedeOverlay');
-  const sedeBtn = document.getElementById('sedeBtn');
-  const sedesGrid = document.getElementById('sedesGrid');
-  const sedeIndicator = document.getElementById('sedeIndicator');
-  const sedeMenuIndicator = document.getElementById('sedeMenuIndicator');
-  const cambiarSedeBtn = document.getElementById('cambiarSedeBtn');
-  const abrirCategoriasBtn = document.getElementById('abrirCategoriasBtn');
-  const footerInfo = document.getElementById('footerInfo');
-  const grid = document.getElementById('grid');
-  const siteContent = document.getElementById('siteContent');
-  const categoriasDestacadas = document.getElementById('categoriasDestacadas');
-
-  const cartToggle = document.getElementById('cartToggle');
-  const cartDrawer = document.getElementById('cartDrawer');
-  const cartOverlay = document.getElementById('cartOverlay');
-  const cartClose = document.getElementById('cartClose');
-  const cartItemsEl = document.getElementById('cartItems');
-  const cartCountEl = document.getElementById('cartCount');
-  const sumPrice = document.getElementById('sumPrice');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const toast = document.getElementById('toast');
-
-  const tipoPedidoSelect = document.getElementById('tipoPedido');
-  const direccionInput = document.getElementById('direccion');
-
-  const checkoutModal = document.getElementById('checkoutModal');
-  const checkoutSede = document.getElementById('checkoutSede');
-  const nombreCliente = document.getElementById('nombreCliente');
-  const emailCliente = document.getElementById('emailCliente');
-  const telefonoCliente = document.getElementById('telefonoCliente');
-  const direccionCliente = document.getElementById('direccionCliente');
-  const metodoPago = document.getElementById('metodoPago');
-  const camposDomicilio = document.getElementById('camposDomicilio');
-  const observacionesCliente = document.getElementById('observacionesCliente');
-  const checkoutCancel = document.getElementById('checkoutCancel');
-  const checkoutSubmit = document.getElementById('checkoutSubmit');
-
-  // ============================================
-  // ===== EASTER EGG - MEMORY GAME =====
-  // ============================================
-  const eggOverlay = document.getElementById('eggOverlay');
-  const eggClose = document.getElementById('eggClose');
-  const eggReset = document.getElementById('eggReset');
-  const memoryGrid = document.getElementById('memoryGrid');
-  const eggMoves = document.getElementById('eggMoves');
-  const eggTime = document.getElementById('eggTime');
-  const eggPairs = document.getElementById('eggPairs');
-  const eggMessage = document.getElementById('eggMessage');
-
-  const EMOJIS = ['👕', '👔', '🧢', '☕', '🛍️', '🎪', '🖨️', '📦'];
-  let gameCards = [];
-  let flippedCards = [];
-  let matchedPairs = 0;
-  let moves = 0;
-  let timer = 0;
-  let timerInterval = null;
-  let isLocked = false;
-
-  function shuffleArray(arr) {
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+const RECIPES = [
+  // ---------------- SMOOTHIES ----------------
+  {
+    cat:'smoothies', name:'Smoothie Oreo', price:22000,
+    ingredientes:['Hielo (vaso lleno)','150 ml leche','2 galletas Oreo','1 scoop proteína vainilla','1 cuchara estabilizante','Chorrito leche condensada','Chocolate líquido (decoración)','Galleta Oreo triturada (base)','Espresso (opcional)'],
+    pasos:[
+      'Decora el interior del vaso con chocolate líquido, formando líneas o un diseño en espiral sobre las paredes.',
+      'Coloca en el fondo del vaso la galleta Oreo previamente triturada, formando una capa uniforme.',
+      'En la licuadora, mezcla el vaso lleno de hielo, 150 ml de leche, 2 galletas Oreo, 1 scoop de proteína sabor vainilla, una cuchara de estabilizante y un chorrito de leche condensada.',
+      'Licúa hasta obtener una mezcla homogénea y cremosa.',
+      'Vierte el smoothie en el vaso decorado, sobre la base de galleta Oreo.',
+      'Pregunta al cliente si desea agregar café; si es así, añade un chorrito de espresso.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ],
+    nota:'Pregunta siempre si el cliente desea el toque de espresso adicional.'
+  },
+  {
+    cat:'smoothies', name:'Smoothie Snickers', price:23000,
+    ingredientes:['1 barra pequeña Snickers (decoración)','Chocolate líquido','Hielo (vaso casi lleno)','150 ml leche','1 cuchara medidora Chocolisto','1 cuchara estabilizante','½ cucharita mantequilla de maní','1 scoop proteína vainilla','1 barra pequeña Snickers (mezcla)'],
+    pasos:[
+      'Corta una barra pequeña de Snickers en trozos pequeños para decorar la base del vaso, junto con chocolate líquido.',
+      'En la licuadora, mezcla el vaso casi lleno de hielo, 150 ml de leche, 1 cuchara medidora de Chocolisto, 1 cuchara de estabilizante, media cucharita de mantequilla de maní, 1 scoop de proteína sabor vainilla y 1 barra pequeña de Snickers.',
+      'Licúa hasta obtener una mezcla homogénea y cremosa.',
+      'Vierte el smoothie en el vaso.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'smoothies', name:'Smoothie Frutos Rojos', price:22000,
+    ingredientes:['Salsa/syrup de fresa (decoración)','Medio vaso hielo','100 ml leche','30 g leche condensada','90 g fruta congelada','1 cuchara estabilizante','1 scoop proteína vainilla','Chocolate Hershey (decoración final)'],
+    pasos:[
+      'Decora el vaso con salsa de fresa, dejando una base de syrup de fresa hasta la primera línea del vaso.',
+      'En la licuadora, mezcla medio vaso de hielo, 100 ml de leche, 30 g de leche condensada, 90 g de fruta congelada, 1 cuchara de estabilizante y 1 scoop de proteína sabor vainilla.',
+      'Licúa hasta obtener una mezcla homogénea, cremosa y de textura suave.',
+      'Vierte el smoothie en el vaso decorado, conservando el diseño, y decora la superficie con círculos de chocolate Hershey.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'smoothies', name:'Smoothie Mango Maracuyá', price:22000,
+    ingredientes:['Salsa de maracuyá (decoración)','Medio vaso hielo','100 ml leche','30 g leche condensada','90 g fruta congelada','1 scoop proteína vainilla','1 cuchara estabilizante'],
+    pasos:[
+      'Decora el interior del vaso con salsa de maracuyá, formando líneas o un diseño en espiral sobre las paredes.',
+      'En la licuadora, mezcla medio vaso de hielo, 100 ml de leche, 30 g de leche condensada, 90 g de fruta congelada, 1 scoop de proteína sabor vainilla y una cuchara de estabilizante.',
+      'Licúa hasta obtener una mezcla homogénea, cremosa y de textura suave.',
+      'Vierte el smoothie en el vaso decorado.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'smoothies', name:'Smoothie Granizado de Café', price:22000,
+    ingredientes:['1 vaso hielo','100 ml leche mezclada con 2 cucharadas de café','30 ml leche condensada','1 scoop proteína vainilla','1 medida de CMC'],
+    pasos:[
+      'En la licuadora, coloca un vaso de hielo.',
+      'Agrega 100 ml de leche previamente mezclados con 2 cucharadas de café.',
+      'Agrega 30 ml de leche condensada.',
+      'Añade 1 scoop de proteína sabor vainilla.',
+      'Agrega 1 servicio (medida) de CMC.',
+      'Licúa hasta obtener una mezcla homogénea y de textura granizada.',
+      'Vierte en el vaso de smoothies.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'smoothies', name:'Smoothie Moca Fit', price:null,
+    ingredientes:['3 g chocolate líquido (decoración)','5 g café (enfriado)','200 g hielo','2 cucharadas Chocolisto','1 scoop proteína vainilla'],
+    pasos:[
+      'Decora el interior del vaso con 3 g de chocolate líquido, formando líneas o un diseño en espiral sobre las paredes.',
+      'Prepara 5 g de café y déjalo enfriar por completo.',
+      'En la licuadora, mezcla 200 g de hielo, el café preparado, 2 cucharadas de Chocolisto y 1 scoop de proteína sabor vainilla.',
+      'Licúa hasta obtener una mezcla homogénea, cremosa y de textura tipo smoothie.',
+      'Vierte el smoothie en el vaso decorado con chocolate líquido.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ],
+    nota:'No está en el menú de venta actual — confirmar precio con administración antes de ofrecer.'
+  },
+  {
+    cat:'protein', name:'Protein Coffee Latte', price:20000,
+    ingredientes:['Café frío','20 ml leche condensada','Base de espresso','Hielo (hasta la mitad del vaso)','150 ml leche','1 scoop proteína vainilla','Espuma de café (decoración)'],
+    pasos:[
+      'Ten listo el café frío en el recipiente destinado.',
+      'Prepara el vaso con una base de 20 ml de leche condensada, seguida de una base de espresso, y llena hasta la mitad con hielo.',
+      'En la licuadora, mezcla 150 ml de leche y 1 scoop de proteína sabor vainilla.',
+      'Vierte la mezcla sobre el hielo y decora con espuma de café.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'protein', name:'Protein Oreo Coffee Latte', price:20000,
+    ingredientes:['Café frío','20 ml leche condensada','2 cucharadas Oreo triturada','Chorrito adicional de leche condensada','Base de espresso','Hielo (hasta la mitad del vaso)','150 ml leche','1 scoop proteína vainilla','Espuma de café (decoración)'],
+    pasos:[
+      'Ten listo el café frío en el recipiente destinado.',
+      'Prepara el vaso con una base de 20 ml de leche condensada, dos cucharadas de Oreo triturada, un chorrito adicional de leche condensada y una base de espresso, y llena hasta la mitad con hielo.',
+      'En la licuadora, mezcla 150 ml de leche y 1 scoop de proteína sabor vainilla.',
+      'Vierte la mezcla sobre el hielo y decora con espuma de café.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ]
+  },
+  {
+    cat:'protein', name:'Batido de Proteína con Leche Deslactosada', price:16000,
+    ingredientes:['300 ml leche deslactosada','1 scoop proteína vainilla','Cuchara medidora de chocolate (si el pedido es chocolate)','Hielo (hasta la mitad del vaso)'],
+    pasos:[
+      'Vierte en la licuadora 300 ml de leche deslactosada junto con 1 scoop de proteína sabor vainilla. Si el pedido es de chocolate, agrega también una cuchara medidora de chocolate.',
+      'Licúa hasta obtener una mezcla homogénea y cremosa.',
+      'Llena el vaso hasta la mitad con hielo.',
+      'Vierte la mezcla lentamente sobre el hielo.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ],
+    nota:'Disponible en vainilla o chocolate — confirma el sabor con el cliente.'
+  },
+  {
+    cat:'protein', name:'Batido de Proteína con Leche de Almendras', price:22000,
+    ingredientes:['300 ml leche de almendras','1 scoop proteína vainilla','Cuchara medidora de chocolate (si el pedido es chocolate)','Hielo (solo hasta la mitad del vaso)','Canela (opcional)'],
+    pasos:[
+      'Vierte en la licuadora 300 ml de leche de almendras junto con 1 scoop de proteína sabor vainilla. Si el pedido es de chocolate, agrega también una cuchara medidora de chocolate.',
+      'Licúa hasta obtener una mezcla homogénea y cremosa.',
+      'Llena el vaso SOLO HASTA LA MITAD con hielo.',
+      'Vierte la mezcla lentamente sobre el hielo.',
+      'Si el cliente lo desea, espolvorea canela sobre el batido.',
+      'Coloca el pitillo y sirve de inmediato.'
+    ],
+    nota:'Importante: llenar el vaso SOLO hasta la mitad con hielo (no más).'
+  },
+  // ---------------- PREENTRENOS ----------------
+  {
+    cat:'preentrenos', name:'Intenze Curazao', price:16000,
+    ingredientes:['Sal naranja (escarchar)','Hielo (hasta la mitad del vaso)','Intenze watermelon en 300 ml de agua','Sirope de curazao o blueberry','Sal naranja o de limón (espolvorear)','Gusanito de goma'],
+    pasos:[
+      'Escarchar el vaso con sal naranja.',
+      'Llenar el vaso hasta la mitad con hielo.',
+      'Preparar el Intenze watermelon en 300 ml de agua.',
+      'Verter la mezcla sobre el hielo, en el vaso ya escarchado.',
+      'Agregar una cuchara pequeña (medidor de siropes) de sirope de curazao o blueberry (preguntar al consumidor).',
+      'Espolvorear con sal naranja o de limón.',
+      'Colocar un gusanito de goma encima.',
+      'Poner el pitillo y entregar.'
+    ],
+    nota:'Pregunta siempre al cliente si prefiere sirope de curazao o blueberry.'
+  },
+  {
+    cat:'preentrenos', name:'Intenze Granadilla', price:16000,
+    ingredientes:['Sal roja (escarchar)','Hielo (hasta la mitad del vaso)','Intenze de sandía o GOD OF WAR en agua','Sirope de granadilla','Sal roja (espolvorear)','Gusanito de goma'],
+    pasos:[
+      'Escarchar el vaso con sal roja.',
+      'Llenar el vaso hasta la mitad con hielo.',
+      'Preparar el Intenze de sandía o GOD OF WAR (si es GOD OF WAR, cobrar $2.000 adicional).',
+      'Verter la mezcla sobre el hielo, en el vaso ya escarchado.',
+      'Agregar una cuchara pequeña (medidor de siropes) de sirope de Granadilla.',
+      'Espolvorear con sal roja.',
+      'Colocar un gusanito de goma encima.'
+    ],
+    nota:'Si se usa GOD OF WAR en lugar de sandía, cobrar $2.000 adicional.'
+  },
+  {
+    cat:'preentrenos', name:'Intenze Bonbonbum (Fruit Punch)', price:16000,
+    ingredientes:['Sal roja (escarchar)','Hielo (un poco más de la mitad del vaso)','Intenze de Fruit Punch en 300 ml de agua','Sirope de fresa','Sal roja (espolvorear)','Gusanito de goma'],
+    pasos:[
+      'Escarchar el vaso con sal roja.',
+      'Llenar el vaso con hielo, un poco más de la mitad.',
+      'Mezclar el Intenze de Fruit Punch en 300 ml de agua.',
+      'Verter la mezcla sobre el hielo, en el vaso ya escarchado.',
+      'Agregar una cuchara pequeña (medidor de siropes) de sirope de fresa.',
+      'Espolvorear con sal roja.',
+      'Colocar un gusanito de goma encima.'
+    ]
+  },
+  {
+    cat:'preentrenos', name:'Hulk', price:15000,
+    ingredientes:['Sal de limón (escarchar)','Hielo (casi hasta el tope)','Sachet Radical o Dilator verde en 300 ml de agua','Sirope de mango biche','Sal de limón (espolvorear)','Gusanito de goma'],
+    pasos:[
+      'Escarchar el vaso con sal de limón.',
+      'Llenar el vaso con hielo, casi hasta el tope.',
+      'Preparar un sachet de Radical o de Dilator verde (según lo que desee el cliente) en 300 ml de agua.',
+      'Verter la mezcla sobre el hielo, en el vaso ya escarchado.',
+      'Agregar una cuchara pequeña (medidor de siropes) de sirope de mango biche.',
+      'Espolvorear con sal de limón.',
+      'Colocar un gusanito de goma encima.'
+    ],
+    nota:'Pregunta al cliente si prefiere Radical o Dilator verde.'
+  },
+  {
+    cat:'preentrenos', name:'The King', price:25000,
+    ingredientes:['Sal roja (escarchar)','Hielo (hasta la mitad del vaso)','Intenze Watermelon/sandía en 50 ml de agua','Monster blanco (energizante enlatado)','Sirope al gusto del cliente','Sal roja (espolvorear)','Gusanito de goma'],
+    pasos:[
+      'Escarchar el vaso con sal roja.',
+      'Llenar el vaso hasta la mitad con hielo.',
+      'Mezclar el Intenze de Watermelon/sandía en 50 ml de agua.',
+      'Verter la mezcla sobre el hielo.',
+      'Llenar el vaso con Monster blanco (energizante enlatado).',
+      'Agregar una cuchara de sirope, del color/sabor que el cliente desee.',
+      'Espolvorear con sal roja.',
+      'Colocar un gusanito de goma encima.',
+      'Entregar al cliente el Monster blanco restante (la lata).'
+    ],
+    nota:'Se entrega al cliente la lata de Monster blanco restante junto con la bebida.'
   }
+];
 
-  function initGame() {
-    clearInterval(timerInterval);
-    timer = 0;
-    moves = 0;
-    matchedPairs = 0;
-    flippedCards = [];
-    isLocked = false;
-    eggMessage.classList.remove('show');
+const grid = document.getElementById('grid');
 
-    const deck = [...EMOJIS, ...EMOJIS].map((emoji, index) => ({
-      id: index,
-      emoji: emoji,
-      flipped: false,
-      matched: false
-    }));
-    gameCards = shuffleArray(deck);
-    renderGame();
-    updateStats();
-    startTimer();
-  }
+function money(n){ return n == null ? 'Precio por confirmar' : '$' + n.toLocaleString('es-CO'); }
 
-  function renderGame() {
-    memoryGrid.innerHTML = gameCards.map((card, index) => `
-      <div class="memory-card ${card.flipped ? 'flipped' : ''} ${card.matched ? 'matched' : ''}" data-index="${index}">
-        <span class="card-back">❓</span>
-        <span class="card-content">${card.emoji}</span>
-      </div>
-    `).join('');
-  }
-
-  function updateStats() {
-    eggMoves.textContent = moves;
-    eggTime.textContent = timer;
-    eggPairs.textContent = matchedPairs;
-  }
-
-  function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      timer++;
-      eggTime.textContent = timer;
-    }, 1000);
-  }
-
-  function checkWin() {
-    if (matchedPairs === EMOJIS.length) {
-      clearInterval(timerInterval);
-      eggMessage.classList.add('show');
-      showToast('🎉 ¡Huevo de pascua completado! Disfruta tu 15% de descuento.');
-    }
-  }
-
-  function handleCardClick(e) {
-    const cardEl = e.target.closest('.memory-card');
-    if (!cardEl) return;
-    if (isLocked) return;
-
-    const index = parseInt(cardEl.dataset.index);
-    const card = gameCards[index];
-    if (card.flipped || card.matched) return;
-    if (flippedCards.length >= 2) return;
-
-    card.flipped = true;
-    flippedCards.push(index);
-    renderGame();
-
-    if (flippedCards.length === 2) {
-      isLocked = true;
-      moves++;
-      updateStats();
-
-      const idx1 = flippedCards[0];
-      const idx2 = flippedCards[1];
-      const card1 = gameCards[idx1];
-      const card2 = gameCards[idx2];
-
-      if (card1.emoji === card2.emoji && idx1 !== idx2) {
-        card1.matched = true;
-        card2.matched = true;
-        matchedPairs++;
-        updateStats();
-        flippedCards = [];
-        isLocked = false;
-        renderGame();
-        checkWin();
-      } else {
-        setTimeout(() => {
-          card1.flipped = false;
-          card2.flipped = false;
-          flippedCards = [];
-          isLocked = false;
-          renderGame();
-        }, 800);
-      }
-    }
-  }
-
-  memoryGrid.addEventListener('click', handleCardClick);
-
-  function openEggGame() {
-    initGame();
-    eggOverlay.classList.add('open');
-  }
-
-  function closeEggGame() {
-    eggOverlay.classList.remove('open');
-    clearInterval(timerInterval);
-  }
-
-  eggClose.addEventListener('click', closeEggGame);
-  eggReset.addEventListener('click', initGame);
-  eggOverlay.addEventListener('click', (e) => {
-    if (e.target === eggOverlay) closeEggGame();
-  });
-
-  // ============================================
-  // ===== CÓDIGO SECRETO (EASTER EGG) =====
-  // ============================================
-  let secretBuffer = '';
-  const SECRET_WORD = 'custom';
-
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-
-    const char = e.key.toLowerCase();
-    if (char.length === 1 && char >= 'a' && char <= 'z') {
-      secretBuffer += char;
-      if (secretBuffer.length > SECRET_WORD.length) {
-        secretBuffer = secretBuffer.slice(-SECRET_WORD.length);
-      }
-      if (secretBuffer === SECRET_WORD) {
-        secretBuffer = '';
-        openEggGame();
-        showToast('👕 ¡Has encontrado el huevo custom!');
-      }
-    }
-  });
-
-  // ============================================
-  // ===== RENDER SEDES (CATEGORÍAS) =====
-  // ============================================
-  function renderSedes() {
-    const sedeKeys = Object.keys(SEDES);
-    sedesGrid.innerHTML = sedeKeys.map(key => {
-      const info = SEDES[key];
-      return `
-        <div class="sede-card" data-sede="${key}">
-          <img class="sede-card-image" src="${info.imagen}" alt="${key}" loading="lazy">
-          <div class="sede-card-content">
-            <h3>${info.emoji} ${key}</h3>
-            <p class="sede-address">📍 ${info.direccion}</p>
-            <p class="sede-hours">⏰ <span>${info.horario}</span></p>
-          </div>
-          <div class="sede-select-indicator">Seleccionar categoría</div>
+function renderCards(){
+  grid.innerHTML = RECIPES.map(r => `
+    <article class="card" data-cat="${r.cat}">
+      <div class="card-top">
+        <span class="card-cat">${CAT_LABEL[r.cat]}</span>
+        <div class="card-top-row">
+          <h3>${r.name}</h3>
+          <span class="card-price ${r.price == null ? 'pending' : ''}">${money(r.price)}</span>
         </div>
-      `;
-    }).join('');
+      </div>
+      <div class="card-body">
+        <div>
+          <div class="block-title">🧾 Ingredientes</div>
+          <ul class="ingredients-list">
+            ${r.ingredientes.map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+        <div>
+          <div class="block-title">📋 Procedimiento</div>
+          <ol class="steps-list">
+            ${r.pasos.map(p => `<li>${p}</li>`).join('')}
+          </ol>
+        </div>
+        ${r.nota ? `<div class="note-box">⚠️ ${r.nota}</div>` : ''}
+      </div>
+    </article>
+  `).join('');
+}
+renderCards();
 
-    document.querySelectorAll('.sede-card').forEach(card => {
-      card.addEventListener('click', function() {
-        const sede = this.dataset.sede;
-        document.querySelectorAll('.sede-card').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        sedeTemporal = sede;
-        sedeBtn.disabled = false;
-      });
-    });
-  }
-  renderSedes();
+const filterBtns = document.querySelectorAll('.filter-btn');
+const searchInput = document.getElementById('searchInput');
+const searchClear = document.getElementById('searchClear');
+const noResults = document.getElementById('noResults');
 
-  // ============================================
-  // ===== FUNCIONES DE SEDE (CATEGORÍAS) =====
-  // ============================================
-  function seleccionarSede(sede) {
-    if (!sede || !SEDES[sede]) return;
-    sedeSeleccionada = sede;
-    const info = SEDES[sede];
+let activeFilter = 'todos';
 
-    sedeIndicator.textContent = `📍 ${sede}`;
-    sedeMenuIndicator.textContent = `📍 ${sede}`;
-    footerInfo.textContent = `${info.direccion} · ${info.horario} · @customwear`;
+function normalize(str){
+  return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
 
-    sedeOverlay.classList.remove('visible');
-    sedeOverlay.classList.add('hidden');
-    siteContent.classList.add('visible');
-    localStorage.setItem('customwear_category', sede);
+function applyFilters(){
+  const query = normalize(searchInput.value.trim());
+  let visibleCount = 0;
 
-    const catMap = {
-      'Camisetas': 'camisetas',
-      'Uniformes': 'uniformes',
-      'Insumos': 'insumos',
-      'Eventos': 'eventos'
-    };
-    aplicarFiltro(catMap[sede] || 'todos');
-  }
+  document.querySelectorAll('.card').forEach((card, idx) => {
+    const recipe = RECIPES[idx];
+    const matchesFilter = activeFilter === 'todos' || card.dataset.cat === activeFilter;
 
-  function mostrarSelectorSede() {
-    sedeTemporal = null;
-    sedeBtn.disabled = true;
-    document.querySelectorAll('.sede-card').forEach(c => c.classList.remove('selected'));
-    sedeOverlay.classList.remove('hidden');
-    sedeOverlay.classList.add('visible');
-    siteContent.classList.remove('visible');
-  }
+    const haystack = normalize([
+      recipe.name,
+      CAT_LABEL[recipe.cat],
+      ...recipe.ingredientes
+    ].join(' '));
+    const matchesSearch = query === '' || haystack.includes(query);
 
-  // ============================================
-  // ===== EVENTOS DE SEDE =====
-  // ============================================
-  sedeBtn.addEventListener('click', function() {
-    if (sedeTemporal && SEDES[sedeTemporal]) {
-      seleccionarSede(sedeTemporal);
-    }
+    const visible = matchesFilter && matchesSearch;
+    card.style.display = visible ? '' : 'none';
+    if(visible) visibleCount++;
   });
 
-  cambiarSedeBtn.addEventListener('click', function() {
-    mostrarSelectorSede();
+  noResults.classList.toggle('show', visibleCount === 0);
+  searchClear.classList.toggle('show', searchInput.value.trim() !== '');
+}
+
+filterBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilters();
   });
+});
 
-  abrirCategoriasBtn.addEventListener('click', function() {
-    mostrarSelectorSede();
-  });
-
-  // ============================================
-  // ===== CATEGORÍAS DESTACADAS =====
-  // ============================================
-  categoriasDestacadas.addEventListener('click', function(e) {
-    const cat = e.target.closest('.cat-destacada');
-    if (!cat) return;
-
-    const filtro = cat.dataset.cat;
-    document.querySelectorAll('.cat-destacada').forEach(c => c.classList.remove('active'));
-    cat.classList.add('active');
-
-    aplicarFiltro(filtro);
-  });
-
-  // ============================================
-  // ===== FILTROS =====
-  // ============================================
-  function aplicarFiltro(filtro) {
-    filtroActual = filtro;
-
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === filtro);
-    });
-
-    document.querySelectorAll('.card').forEach(card => {
-      card.style.display = (filtro === 'todos' || card.dataset.cat === filtro) ? '' : 'none';
-    });
-  }
-
-  // ============================================
-  // ===== RESTAURAR SEDE =====
-  // ============================================
-  function restaurarSede() {
-    const sedeGuardada = localStorage.getItem('customwear_category');
-    if (sedeGuardada && SEDES[sedeGuardada]) {
-      seleccionarSede(sedeGuardada);
-    } else {
-      sedeIndicator.textContent = '📍 Todos los productos';
-      sedeMenuIndicator.textContent = '📍 Todos los productos';
-      siteContent.classList.add('visible');
-      sedeOverlay.classList.add('hidden');
-    }
-  }
-
-  // ============================================
-  // ===== RENDER CARDS =====
-  // ============================================
-  function money(n){ return '$' + n.toLocaleString('es-CO'); }
-
-  function renderCards(){
-    grid.innerHTML = ITEMS.map(item => {
-      const showNutrition = !NO_NUTRITION_CATS.includes(item.cat);
-
-      let nutritionHtml = '';
-      if (showNutrition) {
-        const catKey = item.cat === 'camisetas' ? 'Camisetas' : 
-                       item.cat === 'uniformes' ? 'Uniformes' : 
-                       item.cat === 'insumos' ? 'Insumos' : 'Eventos';
-        nutritionHtml = `
-          <div class="nutrition">
-            <div class="nutrition-title">📋 Detalles del producto</div>
-            <div class="nutrition-grid" style="grid-template-columns: 1fr 1fr 1fr;">
-              <div class="nutrition-item">
-                <span class="label">Entrega</span>
-                <span class="value" style="font-size:0.7rem;">${SEDES[catKey]?.horario || 'Consultar'}</span>
-                <span class="unit"></span>
-              </div>
-              <div class="nutrition-item">
-                <span class="label">Personalización</span>
-                <span class="value">✓</span>
-                <span class="unit">incluida</span>
-              </div>
-              <div class="nutrition-item">
-                <span class="label">Garantía</span>
-                <span class="value">30</span>
-                <span class="unit">días</span>
-              </div>
-            </div>
-          </div>
-        `;
-      } else {
-        const descEspecial = item.descEspecial || item.desc;
-        nutritionHtml = `
-          <div class="nutrition" style="background: var(--surface); border-top: 2px solid var(--secondary);">
-            <div class="nutrition-title" style="color: var(--secondary);">🌟 Sobre este producto</div>
-            <div class="card-desc-especial">${descEspecial}</div>
-          </div>
-        `;
-      }
-
-      return `
-        <article class="card" data-cat="${item.cat}">
-          <img class="card-image" src="${item.img}" alt="${item.name}" loading="lazy">
-          <div class="card-top">
-            <span class="card-cat">${CAT_LABEL[item.cat]}</span>
-            <h3>${item.name}</h3>
-            <p class="card-desc">${item.desc}</p>
-          </div>
-          ${nutritionHtml}
-          <div class="card-footer">
-            <span class="price">${money(item.price)}</span>
-            <button class="add-btn" data-id="${item.id}">+ Agregar</button>
-          </div>
-        </article>
-      `;
-    }).join('');
-
-    aplicarFiltro(filtroActual);
-  }
-  renderCards();
-
-  // ============================================
-  // ===== FILTERS (botones) =====
-  // ============================================
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filtro = btn.dataset.filter;
-      document.querySelectorAll('.cat-destacada').forEach(c => {
-        c.classList.toggle('active', c.dataset.cat === filtro);
-      });
-      aplicarFiltro(filtro);
-    });
-  });
-
-  // ============================================
-  // ===== CART LOGIC =====
-  // ============================================
-  function openCart(){
-    cartDrawer.classList.add('open');
-    cartOverlay.classList.add('open');
-    cartToggle.setAttribute('aria-expanded','true');
-  }
-  function closeCart(){
-    cartDrawer.classList.remove('open');
-    cartOverlay.classList.remove('open');
-    cartToggle.setAttribute('aria-expanded','false');
-  }
-
-  cartToggle.addEventListener('click', openCart);
-  cartClose.addEventListener('click', closeCart);
-  cartOverlay.addEventListener('click', closeCart);
-
-  grid.addEventListener('click', e => {
-    const btn = e.target.closest('.add-btn');
-    if(!btn) return;
-    const id = btn.dataset.id;
-    cart[id] = (cart[id] || 0) + 1;
-    renderCart();
-    showToast('Producto agregado a la cotización');
-    openCart();
-  });
-
-  function renderCart(){
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    let totalPrice = 0, totalCount = 0;
-
-    if(ids.length === 0){
-      cartItemsEl.innerHTML = '<p class="cart-empty">Aún no has seleccionado productos. Explora nuestro catálogo 👀</p>';
-    } else {
-      cartItemsEl.innerHTML = ids.map(id => {
-        const item = ITEMS.find(i => i.id === id);
-        const qty = cart[id];
-        totalPrice += item.price * qty;
-        totalCount += qty;
-        return `
-          <div class="cart-item">
-            <div class="cart-item-info">
-              <div class="cart-item-name">${item.name}</div>
-              <div class="cart-item-meta">${money(item.price)} · ${item.cat}</div>
-            </div>
-            <div class="qty-controls">
-              <button data-id="${id}" data-action="dec">−</button>
-              <span>${qty}</span>
-              <button data-id="${id}" data-action="inc">+</button>
-            </div>
-          </div>`;
-      }).join('');
-    }
-
-    sumPrice.textContent = money(totalPrice);
-    cartCountEl.textContent = totalCount;
-    confirmBtn.disabled = totalCount === 0;
-  }
-  renderCart();
-
-  cartItemsEl.addEventListener('click', e => {
-    const btn = e.target.closest('button[data-action]');
-    if(!btn) return;
-    const id = btn.dataset.id;
-    if(btn.dataset.action === 'inc') cart[id]++;
-    if(btn.dataset.action === 'dec') cart[id] = Math.max(0, cart[id] - 1);
-    renderCart();
-  });
-
-  // ============================================
-  // ===== CHECKOUT MODAL =====
-  // ============================================
-  function openCheckout() {
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    if(ids.length === 0) {
-      showToast('⚠️ Selecciona al menos un producto');
-      return;
-    }
-
-    checkoutSede.textContent = sedeSeleccionada || 'Todos los productos';
-    nombreCliente.value = '';
-    emailCliente.value = '';
-    telefonoCliente.value = '';
-    direccionCliente.value = '';
-    observacionesCliente.value = '';
-
-    camposDomicilio.classList.add('visible');
-
-    checkoutModal.classList.add('open');
-    setTimeout(() => nombreCliente.focus(), 100);
-  }
-
-  function closeCheckout() {
-    checkoutModal.classList.remove('open');
-  }
-
-  confirmBtn.addEventListener('click', openCheckout);
-  checkoutCancel.addEventListener('click', closeCheckout);
-  checkoutModal.addEventListener('click', e => {
-    if(e.target === checkoutModal) closeCheckout();
-  });
-
-  // ============================================
-  // ===== ENVIAR COTIZACIÓN POR WHATSAPP =====
-  // ============================================
-  function enviarPorWhatsApp(mensaje) {
-    const telefono = '573001234567';
-    const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-    window.open(url, '_blank');
-  }
-
-  checkoutSubmit.addEventListener('click', function() {
-    const nombre = nombreCliente.value.trim();
-    const email = emailCliente.value.trim();
-    const telefono = telefonoCliente.value.trim();
-    const detalles = direccionCliente.value.trim();
-    const presupuesto = metodoPago.value;
-    const observaciones = observacionesCliente.value.trim();
-
-    if(!nombre) {
-      showToast('⚠️ Por favor ingresa tu nombre');
-      nombreCliente.focus();
-      return;
-    }
-    if(!email) {
-      showToast('⚠️ Por favor ingresa tu correo electrónico');
-      emailCliente.focus();
-      return;
-    }
-    if(!telefono) {
-      showToast('⚠️ Por favor ingresa tu teléfono');
-      telefonoCliente.focus();
-      return;
-    }
-
-    const ids = Object.keys(cart).filter(id => cart[id] > 0);
-    if(ids.length === 0) {
-      showToast('⚠️ No hay productos seleccionados');
-      return;
-    }
-
-    let total = 0;
-    let resumen = '';
-    ids.forEach(id => {
-      const item = ITEMS.find(i => i.id === id);
-      const qty = cart[id];
-      const subtotal = item.price * qty;
-      total += subtotal;
-      resumen += `  • ${item.name}  x${qty}  =  ${money(subtotal)}\n`;
-    });
-
-    let mensaje = ' *NUEVA COTIZACIÓN - CUSTOM WEAR*\n';
-    mensaje += '━'.repeat(32) + '\n\n';
-
-    mensaje += ` *Categoría:* ${sedeSeleccionada || 'Todos los productos'}\n`;
-    mensaje += ` *Cliente:* ${nombre}\n`;
-    mensaje += ` *Email:* ${email}\n`;
-    mensaje += ` *Teléfono:* ${telefono}\n`;
-    mensaje += ` *Presupuesto:* ${presupuesto}\n`;
-
-    mensaje += '━'.repeat(32) + '\n';
-    mensaje += '   *PRODUCTOS SOLICITADOS*\n';
-    mensaje += '━'.repeat(32) + '\n\n';
-    mensaje += resumen;
-    mensaje += '\n' + '━'.repeat(32) + '\n';
-    mensaje += `   *TOTAL ESTIMADO: ${money(total)}*\n\n`;
-
-    if (detalles) {
-      mensaje += ` *Detalles del pedido:* ${detalles}\n\n`;
-    }
-    if (observaciones) {
-      mensaje += ` *Mensaje adicional:* ${observaciones}\n\n`;
-    }
-
-    mensaje += '━'.repeat(32) + '\n';
-    mensaje += ' *¡Gracias por tu interés!*\n';
-    mensaje += 'Te contactaremos a la brevedad.';
-
-    enviarPorWhatsApp(mensaje);
-
-    setTimeout(() => {
-      Object.keys(cart).forEach(id => cart[id] = 0);
-      renderCart();
-      closeCheckout();
-      closeCart();
-      showToast('✅ Cotización enviada por WhatsApp');
-    }, 300);
-  });
-
-  // ============================================
-  // ===== TOAST =====
-  // ============================================
-  let toastTimer;
-  function showToast(msg){
-    clearTimeout(toastTimer);
-    toast.textContent = msg;
-    toast.classList.add('show');
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  // ============================================
-  // ===== INICIALIZAR =====
-  // ============================================
-  restaurarSede();
+searchInput.addEventListener('input', applyFilters);
+searchClear.addEventListener('click', () => {
+  searchInput.value = '';
+  applyFilters();
+  searchInput.focus();
+});
 </script>
 
 </body>
